@@ -175,7 +175,7 @@ const ProductComponent = () => {
                     <div className="mb-6 text-gray-400">
                       <p>Price: ${product.price}</p>
                       {/* <p>Description: {product.description}</p> */}
-                      <p>Manufacturer: {product.manufacturer}</p>
+                      <p className='text-nowrap'>Manufacturer: {product.manufacturer}</p>
                       <p>Stock Quantity: {product.stock_quantity}</p>
                       <p>Type: {product.type}</p>
                     </div>

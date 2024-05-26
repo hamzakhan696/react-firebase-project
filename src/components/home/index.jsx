@@ -144,8 +144,8 @@ const HomeComponent = () => {
               <div className="mb-4 w-20 rounded-md bg-blue-100 px-2 py-1 text-sm font-medium text-blue-700">Product</div>
               <div className="mb-2 text-2xl">{product.name}</div>
               <div className="mb-6 text-gray-400">
-                <p>Price: ${product.price}</p>
-                <p>Manufacturer: {product.manufacturer}</p>
+                <p >Price: ${product.price}</p>
+                <p className='text-nowrap'>Manufacturer: {product.manufacturer}</p>
                 <p>Stock Quantity: {product.stock_quantity}</p>
                 <p>Type: {product.type}</p>
               </div>
