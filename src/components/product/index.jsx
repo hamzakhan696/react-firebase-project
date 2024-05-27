@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { getDocs, collection, addDoc, deleteDoc, doc, updateDoc } from 'firebase/firestore';
-import { db } from '../../firebase/firebase'; 
+import { db } from '../../firebase/firebase';
 import '../../App.css'; // Importing the app.css file
 import toastr from "toastr";
 import "toastr/build/toastr.min.css"; // Import toastr CSS
@@ -60,7 +60,7 @@ const ProductComponent = () => {
     setNewProduct({ ...product }); // Set newProduct state with the product being edited
     setShowModal(true);
   };
-  
+
 
 
   const handleSubmit = async (event) => {
@@ -71,7 +71,6 @@ const ProductComponent = () => {
         await updateDoc(productRef, newProduct);
         toastr.success('The product has been updated sucessfully.', 'Product Updated');
       } else {
-        const docRef = await addDoc(collection(db, 'Products'), newProduct);
         toastr.success('The product has been added .', 'Product Added');
 
       }
@@ -122,7 +121,7 @@ const ProductComponent = () => {
             ADD New Product
           </button>
         </div>
-                <form class="max-w-md mx-auto mt-16" onSubmit={handleSubmit}>   
+                <form class="max-w-md mx-auto mt-16" onSubmit={handleSubmit}>
           <label for="default-search" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
           <div class="relative">
               <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
@@ -135,7 +134,7 @@ const ProductComponent = () => {
           </div>
         </form>
       </div>
-  
+
       {/* Spinner */}
       {isLoading && (
         <div className='spinner-overlay'>

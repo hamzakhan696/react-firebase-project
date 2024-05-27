@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { getDoc, doc } from 'firebase/firestore';
 import { db } from '../../firebase/firebase'; // Import your firebase configuration
-import { Oval } from 'react-loader-spinner'
 
 const ProductDetailComponent = () => {
   const { productId } = useParams();
@@ -27,7 +26,7 @@ const ProductDetailComponent = () => {
   }, [productId]);
 
   return (
-    
+
     <div className="cards-container mx-32 mt-5 mb-5">
     {product ? (
       <div key={product.id} className="max-w-xs rounded-xl px-8 py-5 text-gray-600 shadow-2xl dark:shadow-lg dark:shadow-gray-300 mt-12">
@@ -51,7 +50,7 @@ const ProductDetailComponent = () => {
       <p>Loading...</p>
     )}
   </div>
-  
+
   );
 };
 

@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { Navigate, Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../../contexts/authContext';
+import { Link, useNavigate } from 'react-router-dom';
 import { doSignInWithEmailAndPassword, doSignInWithGoogle } from '../../../firebase/auth';
 import { doc, getDoc } from "firebase/firestore";
 import { db } from '../../../firebase/firebase';
@@ -9,7 +8,6 @@ import "toastr/build/toastr.min.css"; // Import toastr CSS
 
 const Login = () => {
   const navigate = useNavigate();
-  const { userLoggedIn } = useAuth();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
