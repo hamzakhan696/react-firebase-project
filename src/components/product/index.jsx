@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { getDocs, collection, addDoc, deleteDoc, doc, updateDoc } from 'firebase/firestore';
+import { getDocs, collection, deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import { db } from '../../firebase/firebase';
 import '../../App.css'; // Importing the app.css file
 import toastr from "toastr";
