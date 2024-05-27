@@ -3,6 +3,8 @@ import Register from "./components/auth/register";
 
 import Header from "./components/header";
 import Home from "./components/home";
+import Product from "./components/product";
+import ProductDetailComponent from "./components/product-detail";
 
 import { AuthProvider } from "./contexts/authContext";
 import { useRoutes } from "react-router-dom";
@@ -13,6 +15,7 @@ function App() {
       path: "*",
       element: <Login />,
     },
+    
     {
       path: "/login",
       element: <Login />,
@@ -24,6 +27,14 @@ function App() {
     {
       path: "/home",
       element: <Home />,
+    },
+    {
+      path: "/product",
+      element: <Product />,
+    },
+    {
+      path: "/product/:productId",
+      element: <ProductDetailComponent />,
     },
   ];
   let routesElement = useRoutes(routesArray);
