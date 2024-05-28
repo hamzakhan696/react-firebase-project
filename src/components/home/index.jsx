@@ -137,22 +137,21 @@ const HomeComponent = () => {
   </button>
 </div>
         <form className="max-w-md mx-auto mt-16 search-form">
-          <label htmlFor="default-search" className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
+          <label htmlFor="default-search" className="mb-2 text-sm font-medium text-gray-900 sr-only">Search</label>
           <div className="relative">
             <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-              <svg className="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+              <svg className="w-4 h-4 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
                 <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
               </svg>
             </div>
             <input
               type="search"
               id="default-search"
-              className="block w-full p-4 px-32 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              className="block w-full p-4 px-32 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 "
               placeholder="Search by type or manufacturer..."
               value={searchTerm}
               onChange={handleSearchChange}
             />
-            <button type="submit" className="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Search</button>
           </div>
         </form>
      
@@ -175,7 +174,7 @@ const HomeComponent = () => {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mx-16 mt-12">
         {filteredProducts.map(product => (
-          <div key={product.id} className="max-w-xs rounded-xl px-8 py-5 text-gray-600 shadow-2xl dark:shadow-lg dark:shadow-gray-300">
+          <div key={product.id} className="max-w-xs rounded-xl px-8 py-5 text-gray-600 shadow-2xl ">
             <Link to={`/product/${product.id}`}>
               <div className="mb-4 w-20 rounded-md bg-blue-100 px-2 py-1 text-sm font-medium text-blue-700">Product</div>
               <div className="mb-2 text-2xl">{product.name}</div>
@@ -199,11 +198,11 @@ const HomeComponent = () => {
         ))}
       </div>
 
-      <div className={`fixed inset-y-0 right-0 w-80 bg-gray-100 dark:bg-gray-800 overflow-y-scroll transform ${isSidebarOpen ? 'translate-x-0' : 'translate-x-full'} transition-transform duration-300 ease-in-out shadow-lg`}>
-        <div className="flex justify-between items-center p-4 border-b border-gray-300 dark:border-gray-700">
+      <div className={`fixed inset-y-0 right-0 w-80 bg-gray-100  overflow-y-scroll transform ${isSidebarOpen ? 'translate-x-0' : 'translate-x-full'} transition-transform duration-300 ease-in-out shadow-lg`}>
+        <div className="flex justify-between items-center p-4 border-b border-gray-300 ">
           <h3 className="text-xl font-bold mt-16">Cart</h3>
           <button onClick={handleClearCart} className="self-end mt-20 ms-32 px-4 py-2 text-sm font-medium text-white bg-gray-600 rounded hover:bg-gray-700">Clear</button>
-          <button onClick={handleCloseSidebar} className="text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200">
+          <button onClick={handleCloseSidebar} className="text-gray-600 hover:text-gray-800 ">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
             </svg>
@@ -216,7 +215,7 @@ const HomeComponent = () => {
           ) : (
             <>
               {cart.map((item, index) => (
-                <div key={index} className="mb-4 p-2 border-b border-gray-300 dark:border-gray-700">
+                <div key={index} className="mb-4 p-2 border-b border-gray-300 ">
                   <div className="flex justify-between items-center">
                     <div>
                       <div className="text-lg font-semibold">Name: {item.name}</div>

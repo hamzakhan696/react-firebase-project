@@ -3,6 +3,7 @@ import { getDocs, collection, where, query } from 'firebase/firestore';
 import { db } from '../../firebase/firebase';
 import { Oval } from 'react-loader-spinner';
 import { getAuth } from 'firebase/auth';
+import { Link } from 'react-router-dom'; // Import Link
 
 const OrderHistoryComponent = () => {
   const [orders, setOrders] = useState([]);
@@ -31,55 +32,57 @@ const OrderHistoryComponent = () => {
 
   return (
     <div className="container">
-    <div className="cards-container mx-5 mt-12 pb-5">
-      {isLoading ? (
-        <div className="flex justify-center items-center h-screen">
-          <Oval
-            height="60"
-            width="60"
-            radius="9"
-            color="black"
-            ariaLabel="three-dots-loading"
-            secondaryColor="grey"
-          />
-        </div>
-      ) : orders.length === 0 ? (
-        <div><h1 className='text-center mt-5'>No order history found.</h1></div>
-      ) : (
-        orders.map(order => (
-          <div key={order.id} className="relative max-w-xs rounded-xl px-8 py-5 text-gray-600 shadow-2xl dark:shadow-lg dark:shadow-gray-300 mt-12">
-            <div className="flex justify-between items-center">
-              <div className="mb-4 w-30 rounded-md bg-blue-100 px-3 py-1 text-sm font-medium text-blue-700">Order History</div>
-              <div className="relative">
-                {/* Dropdown button placeholder (optional) */}
-              </div>
-            </div>
-            <div className="mb-2">User ID: {order.userId}</div>
-            <div className="mb-6 text-gray-400">
-              <p>Order Price: ${order.order_price}</p>
-              <p>Order Date: {new Date(order.order_date).toLocaleDateString()}</p>
-              <p>Order Quantity: {order.quantity}</p>
-              <p className="text-lg font-semibold mt-4">Items:</p>
-              {order.items && order.items.length > 0 && (
-                <div>
-                  {order.items.map((item, index) => (
-                    <div key={index} className="border-b border-gray-300 py-2">
-                      <p>Name: {item.name}</p>
-                      <p>Manufacturer: {item.manufacturer}</p>
-                      <p>Price: {item.price}</p>
-                      <p>Type: {item.type}</p>
-                      <p>Stock Quantity: {item.stock_quantity}</p>
-                      <p>Description: {item.description}</p>
-                      <p>Quantity: {item.quantity}</p>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
+      <div className="cards-container mx-5 mt-12 pb-5">
+        {isLoading ? (
+          <div className="flex justify-center items-center h-screen">
+            <Oval
+              height="60"
+              width="60"
+              radius="9"
+              color="black"
+              ariaLabel="three-dots-loading"
+              secondaryColor="grey"
+            />
           </div>
-        ))
-      )}
-    </div>
+        ) : orders.length === 0 ? (
+          <div><h1 className='text-center mt-5'>No order history found.</h1></div>
+        ) : (
+          orders.map(order => (
+            <Link to={`/product/${order.items[0].id}`} key={order.id}> {/* Wrap with Link and pass the product id */}
+              <div className="relative max-w-xs rounded-xl px-8 py-5 text-gray-600 shadow-2xl mt-12">
+                <div className="flex justify-between items-center">
+                  <div className="mb-4 w-30 rounded-md bg-blue-100 px-3 py-1 text-sm font-medium text-blue-700">Order History</div>
+                  <div className="relative">
+                    {/* Dropdown button placeholder (optional) */}
+                  </div>
+                </div>
+                {/* <div className="mb-2">User ID: {order.userId}</div> */}
+                <div className="mb-6 text-gray-400">
+                  <p>Order Price: ${order.order_price}</p>
+                  <p>Order Date: {new Date(order.order_date).toLocaleDateString()}</p>
+                  <p>Order Quantity: {order.quantity}</p>
+                  <p className="text-lg font-semibold mt-4">Items:</p>
+                  {order.items && order.items.length > 0 && (
+                    <div>
+                      {order.items.map((item, index) => (
+                        <div key={index} className="border-b border-gray-300 py-2">
+                          <p>Name: {item.name}</p>
+                          <p>Manufacturer: {item.manufacturer}</p>
+                          <p>Price: {item.price}</p>
+                          <p>Type: {item.type}</p>
+                          <p>Stock Quantity: {item.stock_quantity}</p>
+                          <p>Description: {item.description}</p>
+                          <p>Quantity: {item.quantity}</p>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </Link>
+          ))
+        )}
+      </div>
     </div>
   );
 };
