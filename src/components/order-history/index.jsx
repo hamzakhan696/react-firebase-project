@@ -43,6 +43,8 @@ const OrderHistoryComponent = () => {
             secondaryColor="grey"
           />
         </div>
+      ) : orders.length === 0 ? (
+        <div><h1 className='text-center mt-5'>No order history found.</h1></div>
       ) : (
         orders.map(order => (
           <div key={order.id} className="relative max-w-xs rounded-xl px-8 py-5 text-gray-600 shadow-2xl dark:shadow-lg dark:shadow-gray-300 mt-12">
