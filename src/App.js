@@ -5,6 +5,7 @@ import Header from "./components/header";
 import Home from "./components/home";
 import Product from "./components/product";
 import ProductDetailComponent from "./components/product-detail";
+import OrderHistoryComponent from "./components/order-history";
 
 import { AuthProvider } from "./contexts/authContext";
 import { useRoutes } from "react-router-dom";
@@ -27,6 +28,10 @@ function App() {
     {
       path: "/home",
       element: <Home />,
+    },
+    {
+      path: "/order-history",
+      element: <OrderHistoryComponent />,
     },
     {
       path: "/product",

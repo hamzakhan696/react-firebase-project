@@ -1,36 +1,37 @@
 import React, { useEffect, useState } from 'react';
-import { getDocs, collection } from 'firebase/firestore';
+import { getDocs, collection, addDoc } from 'firebase/firestore';
 import { db } from '../../firebase/firebase';
-import '../../App.css'; // Importing the app.css file
+import '../../App.css';
 import { Link } from 'react-router-dom';
-import { Oval } from 'react-loader-spinner'
+import { Oval } from 'react-loader-spinner';
 import toastr from "toastr";
-import "toastr/build/toastr.min.css"; // Import toastr CSS
+import "toastr/build/toastr.min.css";
+import { getAuth } from 'firebase/auth';
+
 
 const HomeComponent = () => {
   const [products, setProducts] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredProducts, setFilteredProducts] = useState([]);
-  const [cart, setCart] = useState([]); // State to manage cart items
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false); // State to manage sidebar visibility
-  const [isLoading, setIsLoading] = useState(true); // State to track data loading
+  const [cart, setCart] = useState([]);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchProducts = async () => {
-      setIsLoading(true); // Set loading to true when fetching starts
+      setIsLoading(true);
       const colRef = collection(db, 'Products');
       const snapshot = await getDocs(colRef);
       const productsData = snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }));
       setProducts(productsData);
       setFilteredProducts(productsData);
-      setIsLoading(false); // Set loading to false when fetching completes
+      setIsLoading(false);
     };
 
     fetchProducts();
   }, []);
 
   useEffect(() => {
-    // Load cart from local storage
     const storedCart = localStorage.getItem('cart');
     if (storedCart) {
       setCart(JSON.parse(storedCart));
@@ -38,7 +39,6 @@ const HomeComponent = () => {
   }, []);
 
   useEffect(() => {
-    // Save cart to local storage whenever it changes
     localStorage.setItem('cart', JSON.stringify(cart));
   }, [cart]);
 
@@ -55,7 +55,6 @@ const HomeComponent = () => {
     setFilteredProducts(filtered);
   };
 
- 
   const handleAddToCart = (product) => {
     const existingProductIndex = cart.findIndex(item => item.id === product.id);
     if (existingProductIndex >= 0) {
@@ -65,8 +64,8 @@ const HomeComponent = () => {
     } else {
       setCart([...cart, { ...product, quantity: 1 }]);
     }
-    setIsSidebarOpen(true); // Open the sidebar when a product is added to the cart
-    toastr.success('Product added to cart.', 'Success'); // Toastr notification
+    setIsSidebarOpen(true);
+    toastr.success('Product added to cart.', 'Success');
   };
 
   const handleIncrement = (productId) => {
@@ -88,22 +87,56 @@ const HomeComponent = () => {
   };
 
   const handleCloseSidebar = () => {
-    setIsSidebarOpen(false); // Close the sidebar
+    setIsSidebarOpen(false);
   };
-  const handleClearCart = () => {
-    setCart([]); // Clear the cart
-    localStorage.removeItem('cart'); 
-    toastr.success('Products removed.', 'Successsfully'); 
 
+  const handleClearCart = () => {
+    setCart([]);
+    localStorage.removeItem('cart');
+    toastr.success('Products removed.', 'Success');
   };
+
+  const handlePlaceOrder = async () => {
+    const auth = getAuth();
+    const user = auth.currentUser;
+    
+    if (!user) {
+      // User is not authenticated, handle this case accordingly
+      return;
+    }
   
+    const orderData = {
+      userId: user.uid, // Store the user ID
+      items: cart,
+      order_price: calculateTotalPrice(),
+      quantity: cart.reduce((total, item) => total + item.quantity, 0),
+      order_date: new Date().toISOString()
+    };
+  
+    try {
+      await addDoc(collection(db, 'Orders'), orderData);
+      setCart([]);
+      localStorage.removeItem('cart');
+      setIsSidebarOpen(false);
+      toastr.success('Order placed successfully.', 'Success');
+    } catch (error) {
+      toastr.error('Error placing order. Please try again.', 'Error');
+    }
+  };
 
   return (
     <div className="product-container relative pb-12">
       <h2 className="mt-16 title text-center">Home Page</h2>
 
       <div className="flex justify-center">
-        <form className="max-w-md mx-auto mt-16">
+      <div className="mx-16 mt-20">
+  <button className="text-blue-600  bg-blue-600 py-2 px-4 rounded-md transition duration-300 ease-in-out hover:bg-blue-600 text-white">
+    <Link to="/order-history">
+      View Order History
+    </Link>
+  </button>
+</div>
+        <form className="max-w-md mx-auto mt-16 search-form">
           <label htmlFor="default-search" className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
           <div className="relative">
             <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
@@ -122,9 +155,11 @@ const HomeComponent = () => {
             <button type="submit" className="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Search</button>
           </div>
         </form>
+     
       </div>
-  {/* Spinner */}
-  {isLoading && (
+
+
+      {isLoading && (
         <div className='spinner-overlay'>
           <Oval
             height="60"
@@ -137,6 +172,7 @@ const HomeComponent = () => {
           />
         </div>
       )}
+
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mx-16 mt-12">
         {filteredProducts.map(product => (
           <div key={product.id} className="max-w-xs rounded-xl px-8 py-5 text-gray-600 shadow-2xl dark:shadow-lg dark:shadow-gray-300">
@@ -144,7 +180,7 @@ const HomeComponent = () => {
               <div className="mb-4 w-20 rounded-md bg-blue-100 px-2 py-1 text-sm font-medium text-blue-700">Product</div>
               <div className="mb-2 text-2xl">{product.name}</div>
               <div className="mb-6 text-gray-400">
-                <p >Price: ${product.price}</p>
+                <p>Price: ${product.price}</p>
                 <p className='text-nowrap'>Manufacturer: {product.manufacturer}</p>
                 <p>Stock Quantity: {product.stock_quantity}</p>
                 <p>Type: {product.type}</p>
@@ -162,47 +198,52 @@ const HomeComponent = () => {
           </div>
         ))}
       </div>
+
       <div className={`fixed inset-y-0 right-0 w-80 bg-gray-100 dark:bg-gray-800 overflow-y-scroll transform ${isSidebarOpen ? 'translate-x-0' : 'translate-x-full'} transition-transform duration-300 ease-in-out shadow-lg`}>
-  <div className="flex justify-between items-center p-4 border-b border-gray-300 dark:border-gray-700">
-    <h3 className="text-xl font-bold mt-16">Cart</h3>
-    <button onClick={handleClearCart} className="self-end mt-20 ms-32 px-4 py-2 text-sm font-medium text-white bg-gray-600 rounded hover:bg-gray-700">Clear</button>
-
-    <button onClick={handleCloseSidebar} className="text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200">
-      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-      </svg>
-    </button>
-  </div>
-  
-  <div className="p-4">
-    {cart.length === 0 ? (
-      <p>No items in cart</p>
-    ) : (
-      <>
-        {cart.map((item, index) => (
-          <div key={index} className="mb-4 p-2 border-b border-gray-300 dark:border-gray-700">
-            <div className="flex justify-between items-center">
-              <div>
-                <div className="text-lg font-semibold">Name: {item.name}</div>
-                <div className="text-gray-500">Price: ${item.price}</div>
-                <div className="text-gray-400">Manufacturer: {item.manufacturer}</div>
-              </div>
-              <div className="flex items-center">
-                <button onClick={() => handleDecrement(item.id)} className="px-2 py-1 text-sm font-medium text-white bg-red-600 rounded hover:bg-red-700">-</button>
-                <span className="mx-2">{item.quantity}</span>
-                <button onClick={() => handleIncrement(item.id)} className="px-2 py-1 text-sm font-medium text-white bg-green-600 rounded hover:bg-green-700">+</button>
-              </div>
-            </div>
-          </div>
-        ))}
-        <div className="text-lg font-semibold mt-4">
-          Total Price: ${calculateTotalPrice()}
+        <div className="flex justify-between items-center p-4 border-b border-gray-300 dark:border-gray-700">
+          <h3 className="text-xl font-bold mt-16">Cart</h3>
+          <button onClick={handleClearCart} className="self-end mt-20 ms-32 px-4 py-2 text-sm font-medium text-white bg-gray-600 rounded hover:bg-gray-700">Clear</button>
+          <button onClick={handleCloseSidebar} className="text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
         </div>
-      </>
-    )}
-  </div>
-</div>
-
+        
+        <div className="p-4">
+          {cart.length === 0 ? (
+            <p>No items in cart</p>
+          ) : (
+            <>
+              {cart.map((item, index) => (
+                <div key={index} className="mb-4 p-2 border-b border-gray-300 dark:border-gray-700">
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <div className="text-lg font-semibold">Name: {item.name}</div>
+                      <div className="text-gray-500">Price: ${item.price}</div>
+                      <div className="text-gray-400">Manufacturer: {item.manufacturer}</div>
+                    </div>
+                    <div className="flex items-center">
+                      <button onClick={() => handleDecrement(item.id)} className="px-2 py-1 text-sm font-medium text-white bg-red-600 rounded hover:bg-red-700">-</button>
+                      <span className="mx-2">{item.quantity}</span>
+                      <button onClick={() => handleIncrement(item.id)} className="px-2 py-1 text-sm font-medium text-white bg-green-600 rounded hover:bg-green-700">+</button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+              <div className="text-lg font-semibold mt-4">
+                Total Price: ${calculateTotalPrice()}
+              </div>
+              <button
+                className="mt-4 flex items-center justify-center rounded-md bg-slate-900 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-blue-300"
+                onClick={handlePlaceOrder}
+              >
+                Place Order : ${calculateTotalPrice()}
+              </button>
+            </>
+          )}
+        </div>
+      </div>
     </div>
   );
 };

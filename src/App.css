@@ -75,7 +75,9 @@
   font-size: 20px;
   font-weight: 700;
 }
-
+.search-form{
+  margin-left: 40% !important;
+}
 
 /* Custom CSS for sidebar transition */
 .sidebar {
