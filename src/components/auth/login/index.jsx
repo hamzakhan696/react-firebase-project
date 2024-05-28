@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Navigate, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../contexts/authContext';
-import { doSignInWithEmailAndPassword, doSignInWithGoogle } from '../../../firebase/auth';
-import { doc, getDoc } from "firebase/firestore";
+import { doSignInWithEmailAndPassword } from '../../../firebase/auth';
+import { doc, getDoc, collection, getDocs } from "firebase/firestore";
 import { db } from '../../../firebase/firebase';
 import toastr from "toastr";
-import "toastr/build/toastr.min.css"; // Import toastr CSS
+import "toastr/build/toastr.min.css";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -15,18 +15,44 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [isSigningIn, setIsSigningIn] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [users, setUsers] = useState([]);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const usersData = await fetchUsers();
+        setUsers(usersData);
+      } catch (error) {
+        handleFetchError(error);
+      }
+    }
+    fetchData();
+  }, []);
+
+  const handleFetchError = (error) => {
+    console.error("Error fetching users:", error);
+    toastr.error("Error fetching users");
+    throw error;
+  };
+
+  const fetchUsers = async () => {
+    const colRef = collection(db, 'users');
+    const snapshot = await getDocs(colRef);
+    return snapshot.docs.map(doc => ({
+      ...doc.data(),
+      id: doc.id,
+      role: doc.data().role 
+    }));
+  };
 
   const signIn = async (email, password) => {
     try {
       const userCredential = await doSignInWithEmailAndPassword(email, password);
       const user = userCredential.user;
-      console.log("data:",userCredential);
 
       if (!user) {
         throw new Error("User credential is null");
       }
-
-      console.log("User:", user);
 
       const userDoc = await getDoc(doc(db, "users", user.uid));
       let role = null;
@@ -39,10 +65,14 @@ const Login = () => {
 
       return { email: user.email, role };
     } catch (error) {
-      console.error("Error signing in:", error);
-      toastr.error("Error signing in")
-      throw error;
+      handleSignInError(error);
     }
+  };
+
+  const handleSignInError = (error) => {
+    console.error("Error signing in:", error);
+    toastr.error("Error signing in");
+    throw error;
   };
 
   const onSubmit = async (e) => {
@@ -52,8 +82,9 @@ const Login = () => {
 
       try {
         const { email: userEmail, role } = await signIn(email, password);
+        const currentUser = users.find(user => user.email === userEmail);
 
-        if (userEmail === 'admin@gmail.com' || role === 'admin') {
+        if (currentUser && currentUser.role === "admin") {
           navigate('/product');
           toastr.success('You have successfully logged in.', 'Login Successful');
         } else {
@@ -62,28 +93,7 @@ const Login = () => {
         }
       } catch (error) {
         setErrorMessage("Error signing in: " + error.message);
-        setIsSigningIn(false);
-      }
-    }
-  };
-
-  const onGoogleSignIn = async (e) => {
-    e.preventDefault();
-    if (!isSigningIn) {
-      setIsSigningIn(true);
-      try {
-        const userCredential = await doSignInWithGoogle();
-        const user = userCredential.user;
-
-        if (!user) {
-          throw new Error("Google sign-in failed to return a user");
-        }
-
-        console.log("Google User:", user);
-        // Handle navigation based on user's email or role after Google sign-in if needed
-        navigate('/home'); // or any other page you want to navigate to after Google sign-in
-      } catch (error) {
-        setErrorMessage("Error signing in with Google: " + error.message);
+      } finally {
         setIsSigningIn(false);
       }
     }
@@ -135,14 +145,6 @@ const Login = () => {
             >
               {isSigningIn ? 'Signing In...' : 'Sign In'}
             </button>
-            {/* <button
-              type="button"
-              onClick={onGoogleSignIn}
-              disabled={isSigningIn}
-              className={`w-full mt-4 px-4 py-2 text-white font-medium rounded-lg ${isSigningIn ? 'bg-gray-300 cursor-not-allowed' : 'bg-red-600 hover:bg-red-700 hover:shadow-xl transition duration-300'}`}
-            >
-              {isSigningIn ? 'Signing In with Google...' : 'Sign In with Google'}
-            </button> */}
             <div className="text-sm text-center">
               Don't have an account? {' '}
               <Link to={'/register'} className="text-center text-sm hover:underline font-bold">Register</Link>
