@@ -59,20 +59,20 @@ const OrderHistoryComponent = () => {
                 {/* <div className="mb-2">User ID: {order.userId}</div> */}
                 <div className="mb-6 text-gray-400">
                   <p>Order Price: ${order.order_price}</p>
-                  <p>Order Date: {new Date(order.order_date).toLocaleDateString()}</p>
-                  <p>Order Quantity: {order.quantity}</p>
+                  <p className='text-ellipsis'>Order Date: {new Date(order.order_date).toLocaleDateString()}</p>
+                  <p className='text-ellipsis'>Order Quantity: {order.quantity}</p>
                   <p className="text-lg font-semibold mt-4">Items:</p>
                   {order.items && order.items.length > 0 && (
                     <div>
                       {order.items.map((item, index) => (
                         <div key={index} className="border-b border-gray-300 py-2">
                           <p>Name: {item.name}</p>
-                          <p>Manufacturer: {item.manufacturer}</p>
+                          <p className='text-ellipsis'>Manufacturer: {item.manufacturer}</p>
                           <p>Price: {item.price}</p>
-                          <p>Type: {item.type}</p>
+                          <p className='overflow-hidden whitespace-nowrap text-ellipsis'>Type: {item.type}</p>
                           <p>Stock Quantity: {item.stock_quantity}</p>
-                          <p>Description: {item.description}</p>
-                          <p>Quantity: {item.quantity}</p>
+                          <p className='overflow-hidden whitespace-nowrap text-ellipsis'>Description: {item.description}</p>
+                          <p className='overflow-hidden whitespace-nowrap text-ellipsis'>Quantity: {item.quantity}</p>
                         </div>
                       ))}
                     </div>

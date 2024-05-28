@@ -129,34 +129,27 @@ const HomeComponent = () => {
       <h2 className="mt-16 title text-center">Home Page</h2>
 
       <div className="flex justify-center">
-      <div className="mx-16 mt-20">
-  <button className="text-blue-600  bg-blue-600 py-2 px-4 rounded-md transition duration-300 ease-in-out hover:bg-blue-600 text-white">
-    <Link to="/order-history">
-      View Order History
-    </Link>
-  </button>
-</div>
-        <form className="max-w-md mx-auto mt-16 search-form">
-          <label htmlFor="default-search" className="mb-2 text-sm font-medium text-gray-900 sr-only">Search</label>
-          <div className="relative">
-            <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-              <svg className="w-4 h-4 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
-              </svg>
-            </div>
-            <input
-              type="search"
-              id="default-search"
-              className="block w-full p-4 px-32 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 "
-              placeholder="Search by type or manufacturer..."
-              value={searchTerm}
-              onChange={handleSearchChange}
-            />
-          </div>
-        </form>
-     
-      </div>
+      <div className="mx-2 md:mx-1 mt-20">
+      <button className="text-nowrap w-full md:w-auto text-white bg-blue-600 py-2 px-4 rounded-md transition duration-300 ease-in-out hover:bg-blue-700">
+  <Link to="/order-history" className="w-full inline-block text-center">
+    View Order History
+  </Link>
+</button>
 
+</div>
+        <div class="w-4/6	max-w-sm mx-auto mt-20">
+          <form class="relative">
+            <input 
+              type="text" 
+              class="overflow-hidden whitespace-nowrap text-ellipsis w-full pl-10 lg:mx-44 pr-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+              placeholder="Search by type and manufacturer..." value={searchTerm} onChange={handleSearchChange}
+            />
+            <svg class="absolute lg:mx-44 left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M12.9 14.32a8 8 0 111.414-1.414l5.387 5.387a1 1 0 01-1.414 1.414l-5.387-5.387zM14 8a6 6 0 11-12 0 6 6 0 0112 0z" clip-rule="evenodd" />
+            </svg>
+          </form>
+        </div>
+      </div>
 
       {isLoading && (
         <div className='spinner-overlay'>
@@ -172,17 +165,17 @@ const HomeComponent = () => {
         </div>
       )}
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mx-16 mt-12">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mx-md:16 mt-12">
         {filteredProducts.map(product => (
           <div key={product.id} className="max-w-xs rounded-xl px-8 py-5 text-gray-600 shadow-2xl ">
             <Link to={`/product/${product.id}`}>
               <div className="mb-4 w-20 rounded-md bg-blue-100 px-2 py-1 text-sm font-medium text-blue-700">Product</div>
-              <div className="mb-2 text-2xl">{product.name}</div>
+              <div className="text-ellipsis mb-2 text-2xl">{product.name}</div>
               <div className="mb-6 text-gray-400">
-                <p>Price: ${product.price}</p>
-                <p className='text-nowrap'>Manufacturer: {product.manufacturer}</p>
-                <p>Stock Quantity: {product.stock_quantity}</p>
-                <p>Type: {product.type}</p>
+                <p className='text-ellipsis overflow-hidden whitespace-nowrap text-ellipsis'>Price: ${product.price}</p>
+                <p className='text-ellipsis overflow-hidden whitespace-nowrap text-ellipsis'>Manufacturer: {product.manufacturer}</p>
+                <p className='text-ellipsis overflow-hidden whitespace-nowrap text-ellipsis'>Stock Quantity: {product.stock_quantity}</p>
+                <p className='text-ellipsis'>Type: {product.type}</p>
               </div>
             </Link>
             <button
@@ -218,9 +211,9 @@ const HomeComponent = () => {
                 <div key={index} className="mb-4 p-2 border-b border-gray-300 ">
                   <div className="flex justify-between items-center">
                     <div>
-                      <div className="text-lg font-semibold">Name: {item.name}</div>
+                      <div className="text-lg font-semibold text-ellipsis">Name: {item.name}</div>
                       <div className="text-gray-500">Price: ${item.price}</div>
-                      <div className="text-gray-400">Manufacturer: {item.manufacturer}</div>
+                      <div className="text-gray-400 text-ellipsis">Manufacturer: {item.manufacturer}</div>
                     </div>
                     <div className="flex items-center">
                       <button onClick={() => handleDecrement(item.id)} className="px-2 py-1 text-sm font-medium text-white bg-red-600 rounded hover:bg-red-700">-</button>

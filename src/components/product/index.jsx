@@ -130,21 +130,23 @@ const ProductComponent = () => {
       <h2 className='mt-16 title text-center'>Products Page</h2>
       <div className="flex">
         <div className='mt-20'>
-          <button onClick={toggleModal} type="button" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 ">
+          <button onClick={toggleModal} type="button" className="text-nowrap text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 ">
             Add New Product
           </button>
         </div>
-        <form className="max-w-md mx-auto mt-16" onSubmit={handleSubmit}>
-          <label htmlFor="default-search" className="mb-2 text-sm font-medium text-gray-900 sr-only">Search</label>
-          <div className="relative">
-            <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-              <svg className="w-4 h-4 text-gray-500 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
-              </svg>
-            </div>
-            <input type="search" id="default-search" className="block w-full p-4 px-32 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-white-50 focus:ring-blue-500 focus:border-blue-500 " placeholder="Search by type or manufacturer..." value={searchTerm} onChange={handleSearchChange} />
-          </div>
-        </form>
+    
+        <div class="w-4/6	max-w-sm mx-auto mt-20">
+          <form class="relative" onSubmit={handleSubmit}>
+            <input 
+              type="text" 
+              class="w-full pl-10 lg:mx-56 pr-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+              placeholder="Search by type and manufacturer..." value={searchTerm} onChange={handleSearchChange}
+            />
+            <svg class="absolute lg:mx-56 left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M12.9 14.32a8 8 0 111.414-1.414l5.387 5.387a1 1 0 01-1.414 1.414l-5.387-5.387zM14 8a6 6 0 11-12 0 6 6 0 0112 0z" clip-rule="evenodd" />
+            </svg>
+          </form>
+        </div>
       </div>
 
       {/* Spinner */}
@@ -183,17 +185,17 @@ const ProductComponent = () => {
               </div>
             </div>
             <Link to={`/product/${product.id}`}>
-            <div className="mb-2 text-2xl">{product.name}</div>
+            <div className="mb-2 text-2xloverflow-hidden whitespace-nowrap text-ellipsis">{product.name}</div>
             <div className="mb-6 text-gray-400">
               <p>Price: ${product.price}</p>
               {/* <p>Description: {product.description}</p> */}
-              <p className='text-nowrap'>Manufacturer: {product.manufacturer}</p>
-              <p>Stock Quantity: {product.stock_quantity}</p>
-              <p>Type: {product.type}</p>
+              <p className='overflow-hidden whitespace-nowrap text-ellipsis'>Manufacturer: {product.manufacturer}</p>
+              <p className='overflow-hidden whitespace-nowrap text-ellipsis'>Stock Quantity: {product.stock_quantity}</p>
+              <p className='overflow-hidden whitespace-nowrap text-ellipsis'>Type: {product.type}</p>
             </div>
            
             <button className="flex items-center space-x-2 rounded-md border-2 border-blue-500 px-4 py-2 font-medium text-blue-600 transition hover:bg-blue-500 hover:text-white">
-              <span>Learn more</span>
+              <span>More Deatil</span>
               <span>
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-6 w-6">
                   <path fillRule="evenodd" d="M16.72 7.72a.75.75 0 011.06 0l3.75 3.75a.75.75 0 010 1.06l-3.75 3.75a.75.75 0 11-1.06-1.06l2.47-2.47H3a.75.75 0 010-1.5h16.19l-2.47-2.47a.75.75 0 010-1.06z" clipRule="evenodd" />
