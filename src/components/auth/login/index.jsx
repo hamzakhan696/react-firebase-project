@@ -107,7 +107,7 @@ const Login = () => {
                 required
                 value={email}
                 onChange={(e) => { setEmail(e.target.value) }}
-                className="w-full mt-2 px-3 py-2 text-gray-500 bg-transparent outline-none border focus:indigo-600 shadow-sm rounded-lg transition duration-300"
+                className="bg-white-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white outline-none"
               />
             </div>
 
@@ -120,7 +120,7 @@ const Login = () => {
                 required
                 value={password}
                 onChange={(e) => { setPassword(e.target.value) }}
-                className="w-full mt-2 px-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg transition duration-300"
+                className="bg-white-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white outline-none"
               />
             </div>
 
@@ -135,14 +135,14 @@ const Login = () => {
             >
               {isSigningIn ? 'Signing In...' : 'Sign In'}
             </button>
-            <button
+            {/* <button
               type="button"
               onClick={onGoogleSignIn}
               disabled={isSigningIn}
               className={`w-full mt-4 px-4 py-2 text-white font-medium rounded-lg ${isSigningIn ? 'bg-gray-300 cursor-not-allowed' : 'bg-red-600 hover:bg-red-700 hover:shadow-xl transition duration-300'}`}
             >
               {isSigningIn ? 'Signing In with Google...' : 'Sign In with Google'}
-            </button>
+            </button> */}
             <div className="text-sm text-center">
               Don't have an account? {' '}
               <Link to={'/register'} className="text-center text-sm hover:underline font-bold">Register</Link>
