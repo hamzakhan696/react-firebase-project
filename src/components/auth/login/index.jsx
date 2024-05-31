@@ -101,57 +101,61 @@ const Login = () => {
 
   return (
     <div>
-      <main className="w-full h-screen flex self-center place-content-center place-items-center">
-        <div className="w-96 text-gray-600 space-y-5 p-4 shadow-xl border rounded-xl">
-          <div className="text-center mb-6">
-            <div className="mt-2">
-              <h3 className="text-gray-800 text-xl font-semibold sm:text-2xl">Sign In to Your Account</h3>
-            </div>
-          </div>
-          <form onSubmit={onSubmit} className="space-y-4">
-            <div>
-              <label className="text-sm text-gray-600 font-bold">Email</label>
-              <input
-                type="email"
-                autoComplete='email'
-                required
-                value={email}
-                onChange={(e) => { setEmail(e.target.value) }}
-                className="bg-white-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 outline-none"
-              />
-            </div>
+    <main className="w-full h-screen flex flex-col justify-center items-center space-y-8">
+      <div className="login-image mt-12">
+      <img src="/logo.jpg" alt="logo" className=" img-fluid" />
+      </div>
+  <div className="w-96 text-gray-600 space-y-5 p-4 shadow-xl border rounded-xl">
+    <div className="text-center mb-6">
+      <div className="mt-2">
+        <h3 className="text-gray-800 text-xl font-semibold sm:text-2xl">Sign In to Your Account</h3>
+      </div>
+    </div>
+    <form onSubmit={onSubmit} className="space-y-4">
+      <div>
+        <label className="text-sm text-gray-600 font-bold">Email</label>
+        <input
+          type="email"
+          autoComplete='email'
+          required
+          value={email}
+          onChange={(e) => { setEmail(e.target.value) }}
+          className="bg-white-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 outline-none"
+        />
+      </div>
 
-            <div>
-              <label className="text-sm text-gray-600 font-bold">Password</label>
-              <input
-                disabled={isSigningIn}
-                type="password"
-                autoComplete='current-password'
-                required
-                value={password}
-                onChange={(e) => { setPassword(e.target.value) }}
-                className="bg-white-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 outline-none"
-              />
-            </div>
+      <div>
+        <label className="text-sm text-gray-600 font-bold">Password</label>
+        <input
+          disabled={isSigningIn}
+          type="password"
+          autoComplete='current-password'
+          required
+          value={password}
+          onChange={(e) => { setPassword(e.target.value) }}
+          className="bg-white-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 outline-none"
+        />
+      </div>
 
-            {errorMessage && (
-              <span className='text-red-600 font-bold'>{errorMessage}</span>
-            )}
+      {errorMessage && (
+        <span className='text-red-600 font-bold'>{errorMessage}</span>
+      )}
 
-            <button
-              type="submit"
-              disabled={isSigningIn}
-              className={`w-full px-4 py-2 text-white font-medium rounded-lg ${isSigningIn ? 'bg-gray-300 cursor-not-allowed' : 'bg-indigo-600 hover:bg-indigo-700 hover:shadow-xl transition duration-300'}`}
-            >
-              {isSigningIn ? 'Signing In...' : 'Sign In'}
-            </button>
-            <div className="text-sm text-center">
-              Don't have an account? {' '}
-              <Link to={'/register'} className="text-center text-sm hover:underline font-bold">Register</Link>
-            </div>
-          </form>
-        </div>
-      </main>
+      <button
+        type="submit"
+        disabled={isSigningIn}
+        className={`w-full px-4 py-2 text-white font-medium rounded-lg ${isSigningIn ? 'bg-gray-300 cursor-not-allowed' : 'bg-indigo-600 hover:bg-indigo-700 hover:shadow-xl transition duration-300'}`}
+      >
+        {isSigningIn ? 'Signing In...' : 'Sign In'}
+      </button>
+      <div className="text-sm text-center">
+        Don't have an account? {' '}
+        <Link to={'/register'} className="text-center text-sm hover:underline font-bold">Register</Link>
+      </div>
+    </form>
+  </div>
+</main>
+
     </div>
   );
 };

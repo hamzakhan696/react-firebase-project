@@ -97,4 +97,6 @@ input{
   background-color: rgb(247, 245, 245);
 }
 
-
+.login-image img{
+  width: 200px;
+}

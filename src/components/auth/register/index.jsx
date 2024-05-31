@@ -48,7 +48,10 @@ const Register = () => {
     <>
       {userLoggedIn && (<Navigate to={'/home'} replace={true} />)}
 
-      <main className="w-full h-screen flex self-center place-content-center place-items-center">
+      <main className="w-full h-screen flex flex-col justify-center items-center space-y-8">
+      <div className="login-image mt-32">
+      <img src="/logo.jpg" alt="logo" className="img-fluid" />
+      </div>
         <div className="w-96 text-gray-600 space-y-5 p-4 shadow-xl border rounded-xl">
           <div className="text-center mb-6">
             <div className="mt-2">
