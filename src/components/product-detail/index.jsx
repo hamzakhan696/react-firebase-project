@@ -29,6 +29,9 @@ const ProductDetailComponent = () => {
   return (
     
     <div className="cards-container mx-5 mx-md-32 mt-5 mb-5">
+         <div className="login-image absolute inset-0 flex justify-center items-center opacity-10 pointer-events-none z-0">
+       <img src="/logo.jpg" alt="logo" className="img-fluid h-full w-full" style={{ width: '30%', height: '30%', objectFit:'contain' }} />
+    </div>
     {product ? (
       <div key={product.id} className="max-w-xs rounded-xl px-8 py-5 text-gray-600 shadow-2xl mt-12">
         <div className="mb-4 w-32 rounded-md bg-blue-100 px-3 py-1 text-sm font-medium text-blue-700">Product Details</div>

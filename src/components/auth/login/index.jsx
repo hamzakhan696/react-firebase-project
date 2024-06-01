@@ -101,12 +101,12 @@ const Login = () => {
 
   return (
     <div>
-    <main className="w-full h-screen flex flex-col justify-center items-center space-y-8">
-      <div className="login-image mt-12">
-      <img src="/logo.jpg" alt="logo" className=" img-fluid" />
-      </div>
-  <div className="w-96 text-gray-600 space-y-5 p-4 shadow-xl border rounded-xl">
-    <div className="text-center mb-6">
+<main className="w-full h-screen flex flex-col justify-center items-center relative">
+  <div className="w-96 text-gray-600 space-y-5 p-4 shadow-xl border rounded-xl bg-white relative">
+    <div className="login-image absolute inset-0 flex justify-center items-center opacity-10 pointer-events-none z-0">
+      <img src="/logo.jpg" alt="logo" className="img-fluid h-full w-full object-cover" />
+    </div>
+    <div className="text-center mb-6 relative z-10">
       <div className="mt-2">
         <h3 className="text-gray-800 text-xl font-semibold sm:text-2xl">Sign In to Your Account</h3>
       </div>
@@ -116,7 +116,7 @@ const Login = () => {
         <label className="text-sm text-gray-600 font-bold">Email</label>
         <input
           type="email"
-          autoComplete='email'
+          autoComplete="email"
           required
           value={email}
           onChange={(e) => { setEmail(e.target.value) }}
@@ -129,7 +129,7 @@ const Login = () => {
         <input
           disabled={isSigningIn}
           type="password"
-          autoComplete='current-password'
+          autoComplete="current-password"
           required
           value={password}
           onChange={(e) => { setPassword(e.target.value) }}
@@ -138,7 +138,7 @@ const Login = () => {
       </div>
 
       {errorMessage && (
-        <span className='text-red-600 font-bold'>{errorMessage}</span>
+        <span className="text-red-600 font-bold">{errorMessage}</span>
       )}
 
       <button
@@ -149,12 +149,14 @@ const Login = () => {
         {isSigningIn ? 'Signing In...' : 'Sign In'}
       </button>
       <div className="text-sm text-center">
-        Don't have an account? {' '}
-        <Link to={'/register'} className="text-center text-sm hover:underline font-bold">Register</Link>
+        Don't have an account?{' '}
+        <Link to="/register" className="text-center text-sm hover:underline font-bold">Register</Link>
       </div>
     </form>
   </div>
 </main>
+
+
 
     </div>
   );

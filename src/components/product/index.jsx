@@ -126,7 +126,10 @@ const ProductComponent = () => {
   };
 
   return (
-    <div className="product-container pb-12">
+    <div className="product-container pb-12 relative ">
+        <div className="login-image absolute inset-0 flex justify-center items-center opacity-10 pointer-events-none z-0">
+       <img src="/logo.jpg" alt="logo" className="img-fluid h-full w-full" style={{ width: '30%', height: '30%', objectFit:'contain' }} />
+    </div>
       <h2 className='mt-16 title text-center'>Products Page</h2>
       <div className="flex">
         <div className='mt-20'>

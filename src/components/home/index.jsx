@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { getDocs, collection, addDoc } from 'firebase/firestore';
+import { getDocs, collection, addDoc, doc, writeBatch } from 'firebase/firestore';
 import { db } from '../../firebase/firebase';
 import '../../App.css';
 import { Link } from 'react-router-dom';
@@ -7,7 +7,6 @@ import { Oval } from 'react-loader-spinner';
 import toastr from "toastr";
 import "toastr/build/toastr.min.css";
 import { getAuth } from 'firebase/auth';
-
 
 const HomeComponent = () => {
   const [products, setProducts] = useState([]);
@@ -67,10 +66,10 @@ const HomeComponent = () => {
     setIsSidebarOpen(true);
     toastr.success('Product added to cart.', 'Success');
   };
-  const openAddToCart =()=>
-    {
-       setIsSidebarOpen(true);
-     }
+  
+  const openAddToCart = () => {
+    setIsSidebarOpen(true);
+  }
 
   const handleIncrement = (productId) => {
     const newCart = cart.map(item =>
@@ -103,33 +102,64 @@ const HomeComponent = () => {
   const handlePlaceOrder = async () => {
     const auth = getAuth();
     const user = auth.currentUser;
-    
+  
     if (!user) {
-      // User is not authenticated, handle this case accordingly
+      toastr.error('You must be logged in to place an order.', 'Error');
       return;
     }
   
     const orderData = {
-      userId: user.uid, // Store the user ID
+      userId: user.uid,
       items: cart,
       order_price: calculateTotalPrice(),
       quantity: cart.reduce((total, item) => total + item.quantity, 0),
       order_date: new Date().toISOString()
     };
   
+    const batch = writeBatch(db);
+  
     try {
-      await addDoc(collection(db, 'Orders'), orderData);
+      const orderRef = collection(db, 'Orders');
+      const orderDocRef = doc(orderRef);
+      batch.set(orderDocRef, orderData);
+  
+      cart.forEach(item => {
+        const productRef = doc(db, 'Products', item.id);
+        batch.update(productRef, {
+          stock_quantity: item.stock_quantity - item.quantity
+        });
+      });
+  
+      await batch.commit();
+
+      // Update local products state
+      const updatedProducts = products.map(product => {
+        const cartItem = cart.find(item => item.id === product.id);
+        if (cartItem) {
+          return { ...product, stock_quantity: product.stock_quantity - cartItem.quantity };
+        }
+        return product;
+      });
+      
+      setProducts(updatedProducts);
+      setFilteredProducts(updatedProducts);
+
       setCart([]);
       localStorage.removeItem('cart');
       setIsSidebarOpen(false);
       toastr.success('Order placed successfully.', 'Success');
+      
     } catch (error) {
       toastr.error('Error placing order. Please try again.', 'Error');
     }
   };
+  
 
   return (
     <div className="product-container relative pb-12">
+       <div className="login-image absolute inset-0 flex justify-center items-center opacity-10 pointer-events-none z-0">
+       <img src="/logo.jpg" alt="logo" className="img-fluid h-full w-full" style={{ width: '30%', height: '30%', objectFit:'contain' }} />
+    </div>
       <h2 className="mt-16 title text-center">Home Page</h2>
 
       <div className="flex justify-center">
@@ -174,9 +204,9 @@ const HomeComponent = () => {
         </div>
       )}
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mx-md:16 mt-12">
+<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mx-md:16 mt-12">
         {filteredProducts.map(product => (
-          <div key={product.id} className="max-w-xs rounded-xl px-8 py-5 text-gray-600 shadow-2xl ">
+          <div key={product.id} className="max-w-xs rounded-xl px-8 py-5 text-gray-600 shadow-2xl">
             <Link to={`/product/${product.id}`}>
               <div className="mb-4 w-20 rounded-md bg-blue-100 px-2 py-1 text-sm font-medium text-blue-700">Product</div>
               <div className="text-ellipsis mb-2 text-2xl">{product.name}</div>
@@ -187,18 +217,23 @@ const HomeComponent = () => {
                 <p className='text-ellipsis'>Type: {product.type}</p>
               </div>
             </Link>
-            <button
-              onClick={() => handleAddToCart(product)}
-              className="flex items-center justify-center rounded-md bg-slate-900 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-blue-300"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="mr-2 h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
-              </svg>
-              Add to cart
-            </button>
+            {product.stock_quantity === 0 ? (
+              <p className="text-red-500 font-bold">Out of Stock</p>
+            ) : (
+              <button
+                onClick={() => handleAddToCart(product)}
+                className="flex items-center justify-center rounded-md bg-slate-900 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-blue-300"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="mr-2 h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                </svg>
+                Add to cart
+              </button>
+            )}
           </div>
         ))}
       </div>
+
 
       <div className={`fixed inset-y-0 right-0 w-80 bg-gray-100  overflow-y-scroll transform ${isSidebarOpen ? 'translate-x-0' : 'translate-x-full'} transition-transform duration-300 ease-in-out shadow-lg`}>
         <div className="flex justify-between items-center p-4 border-b border-gray-300 ">
