@@ -153,7 +153,6 @@ const HomeComponent = () => {
       toastr.error('Error placing order. Please try again.', 'Error');
     }
   };
-  
 
   return (
     <div className="product-container relative pb-12 z-20">
