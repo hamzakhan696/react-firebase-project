@@ -30,7 +30,7 @@ const ProductDetailComponent = () => {
     
     <div className="cards-container mx-5 mx-md-32 mt-5 mb-5">
          <div className="login-image absolute inset-0 flex justify-center items-center opacity-10 pointer-events-none z-0">
-       <img src="/logo.jpg" alt="logo" className="img-fluid h-full w-full" style={{ width: '30%', height: '30%', objectFit:'contain' }} />
+       <img src="/logo.jpg" alt="logo" className="img-fluid h-full w-full" style={{ width: '50%', height: '50%', objectFit:'contain' }} />
     </div>
     {product ? (
       <div key={product.id} className="max-w-xs rounded-xl px-8 py-5 text-gray-600 shadow-2xl mt-12">

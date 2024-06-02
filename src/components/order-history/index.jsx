@@ -33,7 +33,7 @@ const OrderHistoryComponent = () => {
   return (
     <div className="container relative">
          <div className="login-image absolute inset-0 flex justify-center items-center opacity-10 pointer-events-none z-0">
-       <img src="/logo.jpg" alt="logo" className="img-fluid h-full w-full" style={{ width: '30%', height: '30%', objectFit:'contain' }} />
+       <img src="/logo.jpg" alt="logo" className="img-fluid h-full w-full" style={{ width: '50%', height: '50%', objectFit:'contain' }} />
     </div>
       <div className="cards-container mx-5 mt-12 pb-5">
         {isLoading ? (

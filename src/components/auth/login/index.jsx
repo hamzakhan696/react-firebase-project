@@ -102,16 +102,16 @@ const Login = () => {
   return (
     <div>
 <main className="w-full h-screen flex flex-col justify-center items-center relative">
-  <div className="w-96 text-gray-600 space-y-5 p-4 shadow-xl border rounded-xl bg-white relative">
-    <div className="login-image absolute inset-0 flex justify-center items-center opacity-10 pointer-events-none z-0">
+  <div className="w-96 text-gray-600 space-y-5 p-4 shadow-xl border rounded-xl bg-white relative z-20">
+    <div className="login-image absolute inset-0 flex justify-center items-center opacity-10 pointer-events-none z-10">
       <img src="/logo.jpg" alt="logo" className="img-fluid h-full w-full object-cover" />
     </div>
-    <div className="text-center mb-6 relative z-10">
+    <div className="text-center mb-6 relative z-30">
       <div className="mt-2">
         <h3 className="text-gray-800 text-xl font-semibold sm:text-2xl">Sign In to Your Account</h3>
       </div>
     </div>
-    <form onSubmit={onSubmit} className="space-y-4">
+    <form onSubmit={onSubmit} className="space-y-4 relative z-30">
       <div>
         <label className="text-sm text-gray-600 font-bold">Email</label>
         <input
@@ -155,6 +155,7 @@ const Login = () => {
     </form>
   </div>
 </main>
+
 
 
 
