@@ -155,7 +155,7 @@ const HomeComponent = () => {
   };
 
   return (
-    <div className="product-container relative pb-12 z-20">
+    <div className="product-container relative pb-12">
     <div className="login-image absolute inset-0 flex justify-center items-center opacity-10 pointer-events-none z-0">
       <img src="/logo.jpg" alt="logo" className="img-fluid h-full w-full" style={{ width: '50%', height: '50%', objectFit: 'contain' }} />
     </div>
