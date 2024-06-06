@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { getDoc, doc } from 'firebase/firestore';
 import { db } from '../../firebase/firebase'; // Import your firebase configuration
-import { Oval } from 'react-loader-spinner'
+import { Oval } from 'react-loader-spinner';
+import { Link } from 'react-router-dom';
 
 const ProductDetailComponent = () => {
   const { productId } = useParams();
@@ -27,34 +28,35 @@ const ProductDetailComponent = () => {
   }, [productId]);
 
   return (
-    
     <div className="cards-container mx-5 mx-md-32 mt-5 mb-5">
-         <div className="login-image absolute inset-0 flex justify-center items-center opacity-10 pointer-events-none z-0">
-       <img src="/logo.jpg" alt="logo" className="img-fluid h-full w-full" style={{ width: '50%', height: '50%', objectFit:'contain' }} />
-    </div>
-    {product ? (
-      <div key={product.id} className="max-w-xs rounded-xl px-8 py-5 text-gray-600 shadow-2xl mt-12">
-        <div className="mb-4 w-32 rounded-md bg-blue-100 px-3 py-1 text-sm font-medium text-blue-700">Product Details</div>
-        <div className="mb-2 text-2xl">{product.name}</div>
-        <div className="mb-6 text-gray-400">
-          <p> <span className='text-gray-900 overflow-hidden whitespace-nowrap text-ellipsis '>Price:</span> ${product.price}</p>
-          <p> <span className='text-gray-900 overflow-hidden whitespace-nowrap text-ellipsis'>Description:</span>  {product.description}</p>
-          <p> <span className='text-gray-900 overflow-hidden whitespace-nowrap text-ellipsis'>Manufacturer:</span> {product.manufacturer}</p>
-          <p><span className='text-gray-900 overflow-hidden whitespace-nowrap text-ellipsis'>Stock quantity:</span> {product.stock_quantity}</p>
-          <p><span className='text-gray-900 overflow-hidden whitespace-nowrap text-ellipsis'>Type:</span>  {product.type}</p>
-        </div>
-        {/* <a href="#" className="flex items-center justify-center rounded-md bg-slate-900 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-blue-300">
-          <svg xmlns="http://www.w3.org/2000/svg" className="mr-2 h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
-          </svg>
-          Add to cart
-        </a> */}
+      <div className="login-image absolute inset-0 flex justify-center items-center opacity-10 pointer-events-none z-0">
+        <img src="/logo.jpg" alt="logo" className="img-fluid h-full w-full" style={{ width: '50%', height: '50%', objectFit:'contain' }} />
       </div>
-    ) : (
-      <p>Loading...</p>
-    )}
-  </div>
-  
+      {product ? (
+        <div key={product.id} className="max-w-xs rounded-xl px-8 py-5 text-gray-600 shadow-2xl mt-12">
+          <div className="mb-4 w-32 rounded-md bg-blue-100 px-3 py-1 text-sm font-medium text-blue-700">Product Details</div>
+          {product.image && (
+            <div className="mb-4">
+              <img src={product.image} alt={product.name} className="w-32 h-32 object-cover" />
+            </div>
+          )}
+          <div className="mb-2 text-2xl">{product.name}</div>
+          <div className="mb-6 text-gray-400">
+            <p> <span className='text-gray-900 overflow-hidden whitespace-nowrap text-ellipsis '>Price:</span> ${product.price}</p>
+            <p> <span className='text-gray-900 overflow-hidden whitespace-nowrap text-ellipsis'>Description:</span>  {product.description}</p>
+            <p> <span className='text-gray-900 overflow-hidden whitespace-nowrap text-ellipsis'>Manufacturer:</span> {product.manufacturer}</p>
+            <p><span className='text-gray-900 overflow-hidden whitespace-nowrap text-ellipsis'>Stock quantity:</span> {product.stock_quantity}</p>
+            <p><span className='text-gray-900 overflow-hidden whitespace-nowrap text-ellipsis'>Type:</span>  {product.type}</p>
+          </div>
+         
+        </div>
+      ) : (
+        <div className="flex justify-center items-center h-40">
+          <Oval color="#00BFFF" height={40} width={40} />
+          <p className="ml-3 text-gray-700">Loading...</p>
+        </div>
+      )}
+    </div>
   );
 };
 

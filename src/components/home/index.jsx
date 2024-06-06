@@ -208,6 +208,11 @@ const HomeComponent = () => {
         <div key={product.id} className="max-w-xs rounded-xl px-8 py-5 text-gray-600 shadow-2xl z-10">
           <Link to={`/product/${product.id}`}>
             <div className="mb-4 w-20 rounded-md bg-blue-100 px-2 py-1 text-sm font-medium text-blue-700 z-10">Product</div>
+            {product.image && (
+                <div className="mt-4">
+                  <img src={product.image} alt={product.name} className="w-32 h-32 object-cover" />
+                </div>
+              )}
             <div className="text-ellipsis mb-2 text-2xl z-10">{product.name}</div>
             <div className="mb-6 text-gray-400 z-10">
               <p className='text-ellipsis overflow-hidden whitespace-nowrap text-ellipsis'>Price: ${product.price}</p>
@@ -253,6 +258,9 @@ const HomeComponent = () => {
               <div key={index} className="mb-4 p-2 border-b border-gray-300 ">
                 <div className="flex justify-between items-center">
                   <div>
+                  <div>
+                    <img src={item.image} alt={item.name} style={{ width: '60px' }} />
+                  </div>
                     <div className="text-lg font-semibold text-ellipsis">Name: {item.name}</div>
                     <div className="text-gray-500">Price: ${item.price}</div>
                     <div className="text-gray-400 text-ellipsis">Manufacturer: {item.manufacturer}</div>
