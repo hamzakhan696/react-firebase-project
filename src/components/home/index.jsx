@@ -66,7 +66,7 @@ const HomeComponent = () => {
     setIsSidebarOpen(true);
     toastr.success('Product added to cart.', 'Success');
   };
-  
+
   const openAddToCart = () => {
     setIsSidebarOpen(true);
   }
@@ -102,12 +102,12 @@ const HomeComponent = () => {
   const handlePlaceOrder = async () => {
     const auth = getAuth();
     const user = auth.currentUser;
-  
+
     if (!user) {
       toastr.error('You must be logged in to place an order.', 'Error');
       return;
     }
-  
+
     const orderData = {
       userId: user.uid,
       items: cart,
@@ -115,21 +115,21 @@ const HomeComponent = () => {
       quantity: cart.reduce((total, item) => total + item.quantity, 0),
       order_date: new Date().toISOString()
     };
-  
+
     const batch = writeBatch(db);
-  
+
     try {
       const orderRef = collection(db, 'Orders');
       const orderDocRef = doc(orderRef);
       batch.set(orderDocRef, orderData);
-  
+
       cart.forEach(item => {
         const productRef = doc(db, 'Products', item.id);
         batch.update(productRef, {
           stock_quantity: item.stock_quantity - item.quantity
         });
       });
-  
+
       await batch.commit();
 
       // Update local products state
@@ -140,7 +140,7 @@ const HomeComponent = () => {
         }
         return product;
       });
-      
+
       setProducts(updatedProducts);
       setFilteredProducts(updatedProducts);
 
@@ -148,7 +148,7 @@ const HomeComponent = () => {
       localStorage.removeItem('cart');
       setIsSidebarOpen(false);
       toastr.success('Order placed successfully.', 'Success');
-      
+
     } catch (error) {
       toastr.error('Error placing order. Please try again.', 'Error');
     }
@@ -156,11 +156,11 @@ const HomeComponent = () => {
 
   return (
     <div className="product-container relative pb-12">
-    <div className="absolute inset-0 flex justify-center items-center opacity-10 pointer-events-none z-0">
+    <div className="fixed inset-0 flex justify-center items-center opacity-10 pointer-events-none z-0">
       <img src="/logo.jpg" alt="logo" className="img-fluid h-full w-full" style={{ width: '50%', height: '50%', objectFit: 'contain' }} />
     </div>
     <h2 className="mt-16 title text-center z-10">Home Page</h2>
-  
+
     <div className="flex justify-center z-10">
       <div className="mx-2 md:mx-1 mt-20 flex">
         <button className="text-nowrap w-full md:w-auto text-white bg-blue-600 py-2 px-4 rounded-md transition duration-300 ease-in-out hover:bg-blue-700 z-10">
@@ -177,8 +177,8 @@ const HomeComponent = () => {
       </div>
       <div className="w-4/6 max-w-sm mx-auto mt-20 z-10">
         <form className="relative">
-          <input 
-            type="text" 
+          <input
+            type="text"
             className="overflow-hidden whitespace-nowrap text-ellipsis w-full pl-10 lg:mx-44 pr-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
             placeholder="Search by type and manufacturer..." value={searchTerm} onChange={handleSearchChange}
           />
@@ -201,42 +201,46 @@ const HomeComponent = () => {
         />
       </div>
     )}
-  
+
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mx-md:16 mt-12 relative z-10 ">
       {filteredProducts.map(product => (
-        <div key={product.id} className="max-w-xs rounded-xl px-8 py-5 text-gray-600 shadow-2xl z-10">
+        <div key={product.id} className="bg-white relative max-w-xs rounded-xl overflow-hidden text-gray-600 border border-gray-300 shadow-2xl z-10">
           <Link to={`/product/${product.id}`}>
-            <div className="mb-4 w-20 rounded-md bg-blue-100 px-4 py-1 text-sm font-medium text-blue-700 z-10">Product</div>
+            <div className="absolute top-4 left-4 mb-4 w-20 rounded-md bg-blue-100 px-4 py-1 text-sm font-medium text-blue-700 z-10">Product</div>
             {product.image && (
-                <div className="my-4">
-                  <img src={product.image} alt={product.name} className="w-100 h-100 object-cover" />
+                <div className="w-full h-[250px] overflow-hidden">
+                  <img src={product.image} alt={product.name} className="w-full h-full object-cover hover:scale-150 transition duration-300" />
                 </div>
               )}
-            <div className="text-ellipsis mb-2 text-2xl z-10">{product.name}</div>
-            <div className="mb-6 text-gray-400 z-10">
-              <p> <span className='text-gray-900 overflow-hidden whitespace-nowrap text-ellipsis'>Price:</span> ${product.price}</p>
-              <p>  <span className='text-gray-900 overflow-hidden whitespace-nowrap text-ellipsis'>Manufacturer:</span> {product.manufacturer}</p>
-              <p>  <span className='text-gray-900 overflow-hidden whitespace-nowrap text-ellipsis'>Stock Quantity:</span> {product.stock_quantity}</p>
-              <p>  <span className='text-gray-900 overflow-hidden whitespace-nowrap text-ellipsis'>Type:</span> {product.type}</p>
+            <div className="px-8 py-5">
+              <div className="text-ellipsis font-bold mb-2 text-2xl z-10">{product.name}</div>
+              <div className="mb-6 text-gray-400 z-10">
+                <p> <span className='text-gray-900 overflow-hidden whitespace-nowrap text-ellipsis'>Price:</span> ${product.price}</p>
+                <p>  <span className='text-gray-900 overflow-hidden whitespace-nowrap text-ellipsis'>Manufacturer:</span> {product.manufacturer}</p>
+                <p>  <span className='text-gray-900 overflow-hidden whitespace-nowrap text-ellipsis'>Stock Quantity:</span> {product.stock_quantity}</p>
+                <p>  <span className='text-gray-900 overflow-hidden whitespace-nowrap text-ellipsis'>Type:</span> {product.type}</p>
+              </div>
             </div>
           </Link>
-          {product.stock_quantity === 0 ? (
-            <p className="text-red-500 font-bold z-10">Out of Stock</p>
-          ) : (
-            <button
-              onClick={() => handleAddToCart(product)}
-              className="flex items-center justify-center rounded-md bg-slate-900 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-blue-300 z-10"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="mr-2 h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
-              </svg>
-              Add to cart
-            </button>
-          )}
+          <div className="">
+            {product.stock_quantity === 0 ? (
+              <p className="text-red-500 font-bold z-10">Out of Stock</p>
+            ) : (
+              <button
+                onClick={() => handleAddToCart(product)}
+                className="flex items-center justify-center w-full rounded-b-md bg-slate-900 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-blue-300 z-10"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="mr-2 h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                </svg>
+                Add to cart
+              </button>
+            )}
+          </div>
         </div>
       ))}
     </div>
-  
+
     <div className={`fixed inset-y-0 right-0 w-80 bg-gray-100 overflow-y-scroll transform ${isSidebarOpen ? 'translate-x-0' : 'translate-x-full'} transition-transform duration-300 ease-in-out shadow-lg z-10`}>
       <div className="flex justify-between items-center p-4 border-b border-gray-300 ">
         <h3 className="text-xl font-bold mt-16">Cart</h3>
@@ -247,7 +251,7 @@ const HomeComponent = () => {
           </svg>
         </button>
       </div>
-  
+
       <div className="p-4">
         {cart.length === 0 ? (
           <p>No items in cart</p>
@@ -286,7 +290,7 @@ const HomeComponent = () => {
       </div>
     </div>
   </div>
-  
+
   );
 };
 
