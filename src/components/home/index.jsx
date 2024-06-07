@@ -156,7 +156,7 @@ const HomeComponent = () => {
 
   return (
     <div className="product-container relative pb-12">
-    <div className="login-image absolute inset-0 flex justify-center items-center opacity-10 pointer-events-none z-0">
+    <div className="absolute inset-0 flex justify-center items-center opacity-10 pointer-events-none z-0">
       <img src="/logo.jpg" alt="logo" className="img-fluid h-full w-full" style={{ width: '50%', height: '50%', objectFit: 'contain' }} />
     </div>
     <h2 className="mt-16 title text-center z-10">Home Page</h2>
@@ -188,7 +188,6 @@ const HomeComponent = () => {
         </form>
       </div>
     </div>
-  
     {isLoading && (
       <div className='spinner-overlay z-10'>
         <Oval
@@ -203,7 +202,7 @@ const HomeComponent = () => {
       </div>
     )}
   
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mx-md:16 mt-12 z-10">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mx-md:16 mt-12 relative z-10 ">
       {filteredProducts.map(product => (
         <div key={product.id} className="max-w-xs rounded-xl px-8 py-5 text-gray-600 shadow-2xl z-10">
           <Link to={`/product/${product.id}`}>
