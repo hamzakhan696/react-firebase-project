@@ -1,30 +1,58 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { doSignInWithEmailAndPassword, doSignInWithGoogle } from '../../../firebase/auth';
-import { doc, getDoc } from "firebase/firestore";
+import React, { useState, useEffect } from 'react';
+import { Navigate, Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../../contexts/authContext';
+import { doSignInWithEmailAndPassword } from '../../../firebase/auth';
+import { doc, getDoc, collection, getDocs } from "firebase/firestore";
 import { db } from '../../../firebase/firebase';
 import toastr from "toastr";
-import "toastr/build/toastr.min.css"; // Import toastr CSS
+import "toastr/build/toastr.min.css";
 
 const Login = () => {
   const navigate = useNavigate();
+  const { userLoggedIn } = useAuth();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isSigningIn, setIsSigningIn] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [users, setUsers] = useState([]);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const usersData = await fetchUsers();
+        setUsers(usersData);
+      } catch (error) {
+        handleFetchError(error);
+      }
+    }
+    fetchData();
+  }, []);
+
+  const handleFetchError = (error) => {
+    console.error("Error fetching users:", error);
+    toastr.error("Error fetching users");
+    throw error;
+  };
+
+  const fetchUsers = async () => {
+    const colRef = collection(db, 'users');
+    const snapshot = await getDocs(colRef);
+    return snapshot.docs.map(doc => ({
+      ...doc.data(),
+      id: doc.id,
+      role: doc.data().role 
+    }));
+  };
 
   const signIn = async (email, password) => {
     try {
       const userCredential = await doSignInWithEmailAndPassword(email, password);
       const user = userCredential.user;
-      console.log("data:",userCredential);
 
       if (!user) {
         throw new Error("User credential is null");
       }
-
-      console.log("User:", user);
 
       const userDoc = await getDoc(doc(db, "users", user.uid));
       let role = null;
@@ -37,10 +65,14 @@ const Login = () => {
 
       return { email: user.email, role };
     } catch (error) {
-      console.error("Error signing in:", error);
-      toastr.error("Error signing in")
-      throw error;
+      handleSignInError(error);
     }
+  };
+
+  const handleSignInError = (error) => {
+    console.error("Error signing in:", error);
+    toastr.error("Error signing in");
+    throw error;
   };
 
   const onSubmit = async (e) => {
@@ -50,8 +82,9 @@ const Login = () => {
 
       try {
         const { email: userEmail, role } = await signIn(email, password);
+        const currentUser = users.find(user => user.email === userEmail);
 
-        if (userEmail === 'admin@gmail.com' || role === 'admin') {
+        if (currentUser && currentUser.role === "admin") {
           navigate('/product');
           toastr.success('You have successfully logged in.', 'Login Successful');
         } else {
@@ -60,28 +93,7 @@ const Login = () => {
         }
       } catch (error) {
         setErrorMessage("Error signing in: " + error.message);
-        setIsSigningIn(false);
-      }
-    }
-  };
-
-  const onGoogleSignIn = async (e) => {
-    e.preventDefault();
-    if (!isSigningIn) {
-      setIsSigningIn(true);
-      try {
-        const userCredential = await doSignInWithGoogle();
-        const user = userCredential.user;
-
-        if (!user) {
-          throw new Error("Google sign-in failed to return a user");
-        }
-
-        console.log("Google User:", user);
-        // Handle navigation based on user's email or role after Google sign-in if needed
-        navigate('/home'); // or any other page you want to navigate to after Google sign-in
-      } catch (error) {
-        setErrorMessage("Error signing in with Google: " + error.message);
+      } finally {
         setIsSigningIn(false);
       }
     }
@@ -89,65 +101,64 @@ const Login = () => {
 
   return (
     <div>
-      <main className="w-full h-screen flex self-center place-content-center place-items-center">
-        <div className="w-96 text-gray-600 space-y-5 p-4 shadow-xl border rounded-xl">
-          <div className="text-center mb-6">
-            <div className="mt-2">
-              <h3 className="text-gray-800 text-xl font-semibold sm:text-2xl">Sign In to Your Account</h3>
-            </div>
-          </div>
-          <form onSubmit={onSubmit} className="space-y-4">
-            <div>
-              <label className="text-sm text-gray-600 font-bold">Email</label>
-              <input
-                type="email"
-                autoComplete='email'
-                required
-                value={email}
-                onChange={(e) => { setEmail(e.target.value) }}
-                className="w-full mt-2 px-3 py-2 text-gray-500 bg-transparent outline-none border focus:indigo-600 shadow-sm rounded-lg transition duration-300"
-              />
-            </div>
+<main className="w-full h-screen flex flex-col justify-center items-center relative">
+  <div className="w-96 text-gray-600 space-y-5 p-4 shadow-xl border rounded-xl bg-white relative z-20">
+    <div className="login-image absolute inset-0 flex justify-center items-center opacity-10 pointer-events-none z-10">
+      <img src="/logo.jpg" alt="logo" className="img-fluid h-full w-full object-cover" />
+    </div>
+    <div className="text-center mb-6 relative z-30">
+      <div className="mt-2">
+        <h3 className="text-gray-800 text-xl font-semibold sm:text-2xl">Sign In to Your Account</h3>
+      </div>
+    </div>
+    <form onSubmit={onSubmit} className="space-y-4 relative z-30">
+      <div>
+        <label className="text-sm text-gray-600 font-bold">Email</label>
+        <input
+          type="email"
+          autoComplete="email"
+          required
+          value={email}
+          onChange={(e) => { setEmail(e.target.value) }}
+          className="bg-white-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 outline-none"
+        />
+      </div>
 
-            <div>
-              <label className="text-sm text-gray-600 font-bold">Password</label>
-              <input
-                disabled={isSigningIn}
-                type="password"
-                autoComplete='current-password'
-                required
-                value={password}
-                onChange={(e) => { setPassword(e.target.value) }}
-                className="w-full mt-2 px-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg transition duration-300"
-              />
-            </div>
+      <div>
+        <label className="text-sm text-gray-600 font-bold">Password</label>
+        <input
+          disabled={isSigningIn}
+          type="password"
+          autoComplete="current-password"
+          required
+          value={password}
+          onChange={(e) => { setPassword(e.target.value) }}
+          className="bg-white-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 outline-none"
+        />
+      </div>
 
-            {errorMessage && (
-              <span className='text-red-600 font-bold'>{errorMessage}</span>
-            )}
+      {errorMessage && (
+        <span className="text-red-600 font-bold">{errorMessage}</span>
+      )}
 
-            <button
-              type="submit"
-              disabled={isSigningIn}
-              className={`w-full px-4 py-2 text-white font-medium rounded-lg ${isSigningIn ? 'bg-gray-300 cursor-not-allowed' : 'bg-indigo-600 hover:bg-indigo-700 hover:shadow-xl transition duration-300'}`}
-            >
-              {isSigningIn ? 'Signing In...' : 'Sign In'}
-            </button>
-            <button
-              type="button"
-              onClick={onGoogleSignIn}
-              disabled={isSigningIn}
-              className={`w-full mt-4 px-4 py-2 text-white font-medium rounded-lg ${isSigningIn ? 'bg-gray-300 cursor-not-allowed' : 'bg-red-600 hover:bg-red-700 hover:shadow-xl transition duration-300'}`}
-            >
-              {isSigningIn ? 'Signing In with Google...' : 'Sign In with Google'}
-            </button>
-            <div className="text-sm text-center">
-              Don't have an account? {' '}
-              <Link to={'/register'} className="text-center text-sm hover:underline font-bold">Register</Link>
-            </div>
-          </form>
-        </div>
-      </main>
+      <button
+        type="submit"
+        disabled={isSigningIn}
+        className={`w-full px-4 py-2 text-white font-medium rounded-lg ${isSigningIn ? 'bg-gray-300 cursor-not-allowed' : 'bg-indigo-600 hover:bg-indigo-700 hover:shadow-xl transition duration-300'}`}
+      >
+        {isSigningIn ? 'Signing In...' : 'Sign In'}
+      </button>
+      <div className="text-sm text-center">
+        Don't have an account?{' '}
+        <Link to="/register" className="text-center text-sm hover:underline font-bold">Register</Link>
+      </div>
+    </form>
+  </div>
+</main>
+
+
+
+
     </div>
   );
 };
