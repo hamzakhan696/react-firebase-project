@@ -36,8 +36,8 @@ const ProductDetailComponent = () => {
         <div key={product.id} className="max-w-xs rounded-xl px-8 py-5 text-gray-600 shadow-2xl mt-12">
           <div className="mb-4 w-32 rounded-md bg-blue-100 px-3 py-1 text-sm font-medium text-blue-700">Product Details</div>
           {product.image && (
-            <div className="mb-4">
-              <img src={product.image} alt={product.name} className="w-32 h-32 object-cover" />
+            <div className="my-4">
+              <img src={product.image} alt={product.name} className="w-100 h-100 object-cover" />
             </div>
           )}
           <div className="mb-2 text-2xl">{product.name}</div>

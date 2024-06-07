@@ -207,18 +207,18 @@ const HomeComponent = () => {
       {filteredProducts.map(product => (
         <div key={product.id} className="max-w-xs rounded-xl px-8 py-5 text-gray-600 shadow-2xl z-10">
           <Link to={`/product/${product.id}`}>
-            <div className="mb-4 w-20 rounded-md bg-blue-100 px-2 py-1 text-sm font-medium text-blue-700 z-10">Product</div>
+            <div className="mb-4 w-20 rounded-md bg-blue-100 px-4 py-1 text-sm font-medium text-blue-700 z-10">Product</div>
             {product.image && (
-                <div className="mt-4">
-                  <img src={product.image} alt={product.name} className="w-32 h-32 object-cover" />
+                <div className="my-4">
+                  <img src={product.image} alt={product.name} className="w-100 h-100 object-cover" />
                 </div>
               )}
             <div className="text-ellipsis mb-2 text-2xl z-10">{product.name}</div>
             <div className="mb-6 text-gray-400 z-10">
-              <p className='text-ellipsis overflow-hidden whitespace-nowrap text-ellipsis'>Price: ${product.price}</p>
-              <p className='text-ellipsis overflow-hidden whitespace-nowrap text-ellipsis'>Manufacturer: {product.manufacturer}</p>
-              <p className='text-ellipsis overflow-hidden whitespace-nowrap text-ellipsis'>Stock Quantity: {product.stock_quantity}</p>
-              <p className='text-ellipsis z-10'>Type: {product.type}</p>
+              <p> <span className='text-gray-900 overflow-hidden whitespace-nowrap text-ellipsis'>Price:</span> ${product.price}</p>
+              <p>  <span className='text-gray-900 overflow-hidden whitespace-nowrap text-ellipsis'>Manufacturer:</span> {product.manufacturer}</p>
+              <p>  <span className='text-gray-900 overflow-hidden whitespace-nowrap text-ellipsis'>Stock Quantity:</span> {product.stock_quantity}</p>
+              <p>  <span className='text-gray-900 overflow-hidden whitespace-nowrap text-ellipsis'>Type:</span> {product.type}</p>
             </div>
           </Link>
           {product.stock_quantity === 0 ? (

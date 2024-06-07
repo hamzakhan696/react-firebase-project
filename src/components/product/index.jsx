@@ -214,8 +214,8 @@ const ProductComponent = () => {
             <Link to={`/product/${product.id}`}>
               <div className="mt-2">
                 {product.image && (
-                  <div className="mt-4">
-                    <img src={product.image} alt={product.name} className="w-32 h-32 object-cover" />
+                  <div className="my-4">
+                    <img src={product.image} alt={product.name} className="w-100 h-100 object-cover" />
                   </div>
                 )}
                 <h2 className="text-lg font-bold text-gray-800">{product.name}</h2>
