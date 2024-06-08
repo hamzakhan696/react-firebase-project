@@ -192,7 +192,7 @@ const HomeComponent = () => {
           View Cart
         </button>
       </div>
-      <div className="flex items-center mt-20 z-10">
+      <div className="flex items-center mt-20">
         <div className="relative">
           <input
             type="text"
@@ -204,7 +204,7 @@ const HomeComponent = () => {
           </svg>
         </div>
 
-        <div className="relative inline-block text-left shrink-0">
+        <div className="relative inline-block text-left shrink-0 z-20">
           <button onClick={toggleDropdown} className="border border-blue-500 bg-blue-500 text-white font-semibold py-2 px-4 rounded-r-md focus:outline-none focus:ring focus:ring-blue-200 flex items-center gap-2">
             Filter
             <svg className={`fill-current h-4 w-4 transform ${isDropdownOpen ? 'rotate-180' : ''}`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
