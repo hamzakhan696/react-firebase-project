@@ -31,7 +31,7 @@ const OrderHistoryComponent = () => {
   }, []);
 
   return (
-    <div className="container relative">
+    <div className="container mx-auto relative">
          <div className="login-image fixed inset-0 flex justify-center items-center opacity-10 pointer-events-none z-0">
        <img src="/logo.jpg" alt="logo" className="img-fluid h-full w-full scale-110" style={{ width: '50%', height: '50%', objectFit:'contain' }} />
     </div>
