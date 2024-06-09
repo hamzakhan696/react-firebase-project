@@ -17,6 +17,7 @@ const Header = () => {
                     :
                     <>
                         <Link className='text-sm text-blue-600 font-medium hover:underline' to={'/login'}>Login</Link>
+                        <span className="text-sm text-gray-600">|</span>
                         <Link className='text-sm text-blue-600 font-medium hover:underline' to={'/register'}>Register New Account</Link>
                     </>
             }
