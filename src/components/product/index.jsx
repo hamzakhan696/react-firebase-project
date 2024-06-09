@@ -243,7 +243,7 @@ const ProductComponent = () => {
             <div key={product.id} className="bg-white relative max-w-xs rounded-xl overflow-hidden text-gray-600 border border-gray-300 shadow-2xl z-10">
               <div className="flex justify-between items-center">
                 <div className="absolute top-4 left-4 mb-4 w-20 rounded-md bg-blue-100 px-4 py-1 text-sm font-medium text-blue-700 z-10">Product</div>
-                <div className="absolute right-4 top-4">
+                <div className="absolute right-4 top-4 z-10">
                   <button onClick={() => toggleDropdown(product.id)} className="focus:outline-none">
                     <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v.01M12 12v.01M12 18v.01"></path>
@@ -252,8 +252,8 @@ const ProductComponent = () => {
                   {dropdownVisible[product.id] && (
                     <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-50">
                       <ul>
-                        <li className="block px-4 py-2 text-gray-800 hover:bg-gray-100 cursor-pointer" onClick={() => handleEditProduct(product)}>Edit</li>
-                        <li className="block px-4 py-2 text-danger-800 hover:bg-gray-100 cursor-pointer" onClick={() => deleteProduct(product.id)}>Delete</li>
+                        <li className="block px-4 py-2 text-gray-800 hover:bg-gray-200 cursor-pointer" onClick={() => handleEditProduct(product)}>Edit</li>
+                        <li className="block px-4 py-2 text-gray-800 hover:bg-red-400 hover:text-white cursor-pointer" onClick={() => deleteProduct(product.id)}>Delete</li>
                       </ul>
                     </div>
                   )}
@@ -300,50 +300,64 @@ const ProductComponent = () => {
 
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center overflow-auto bg-black bg-opacity-50">
-          <div className="bg-white rounded-lg shadow-lg p-8 w-full max-w-md">
-            <h2 className="text-2xl font-semibold mb-4">{editingProduct ? 'Edit Product' : 'Add New Product'}</h2>
-            <form onSubmit={handleSubmit}>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="mb-4">
-                  <label className="block mb-1 font-semibold">Name:</label>
-                  <input type="text" name="name" value={newProduct.name} onChange={handleInputChange} className="w-full border border-gray-300 rounded px-3 py-2" placeholder='Name' />
-                </div>
-                <div className="mb-4">
-                  <label className="block mb-1 font-semibold">Price:</label>
-                  <input type="text" name="price" value={newProduct.price} onChange={handleInputChange} className="w-full border border-gray-300 rounded px-3 py-2" placeholder='Price' />
-                </div>
-                <div className="mb-4">
-                  <label className="block mb-1 font-semibold">Manufacturer:</label>
-                  <input type="text" name="manufacturer" value={newProduct.manufacturer} onChange={handleInputChange} className="w-full border border-gray-300 rounded px-3 py-2" placeholder='Manufacturer' />
-                </div>
-                <div className="mb-4">
-                  <label className="block mb-1 font-semibold">Stock Quantity:</label>
-                  <input type="text" name="stock_quantity" value={newProduct.stock_quantity} onChange={handleInputChange} className="w-full border border-gray-300 rounded px-3 py-2" placeholder='Quantity' />
-                </div>
-                <div className="mb-4">
-                  <label className="block mb-1 font-semibold">Type:</label>
-                  <input type="text" name="type" value={newProduct.type} onChange={handleInputChange} className="w-full border border-gray-300 rounded px-3 py-2" placeholder='Type' />
-                </div>
-                <div className="mb-4 ">
-                  <label className="block mb-1 font-semibold">Description:</label>
-                  <input name="description" value={newProduct.description} onChange={handleInputChange} className="w-full border border-gray-300 rounded px-3 py-2" placeholder='Description'/>
-                </div>
-                <div className="mb-4 col-span-2">
-                  <label className="block mb-1 font-semibold">Image:</label>
-                  {imagePreview && (
-                    <div className="mb-2">
-                      <img src={imagePreview} alt="Product" className="w-32 h-32 object-cover" />
-                    </div>
-                  )}
-                  <input type="file" accept="image/*" onChange={handleImageChange} className="w-full border border-gray-300 rounded px-3 py-2" />
-                </div>
+          <div className="bg-white rounded-lg shadow-lg w-full max-w-md">
+            <h2 className="text-2xl font-semibold mb-4 px-8 py-5">{editingProduct ? 'Edit Product' : 'Add New Product'}</h2>
+            <div className="overflow-y-auto max-h-[400px] px-8 pb-8">
 
-              </div>
-              <div className="flex justify-end mt-4">
-                <button type="button" onClick={handleCloseModal} className="mr-2 bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded">Cancel</button>
-                <button type="submit" className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded">{editingProduct ? 'Update' : 'Add'}</button>
-              </div>
-            </form>
+              <form onSubmit={handleSubmit}>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="mb-4">
+                    <label className="block mb-1 font-semibold">Name:</label>
+                    <input type="text" name="name" value={newProduct.name} onChange={handleInputChange}
+                           className="w-full border border-gray-300 rounded px-3 py-2" placeholder='Name'/>
+                  </div>
+                  <div className="mb-4">
+                    <label className="block mb-1 font-semibold">Price:</label>
+                    <input type="text" name="price" value={newProduct.price} onChange={handleInputChange}
+                           className="w-full border border-gray-300 rounded px-3 py-2" placeholder='Price'/>
+                  </div>
+                  <div className="mb-4">
+                    <label className="block mb-1 font-semibold">Manufacturer:</label>
+                    <input type="text" name="manufacturer" value={newProduct.manufacturer} onChange={handleInputChange}
+                           className="w-full border border-gray-300 rounded px-3 py-2" placeholder='Manufacturer'/>
+                  </div>
+                  <div className="mb-4">
+                    <label className="block mb-1 font-semibold">Stock Quantity:</label>
+                    <input type="text" name="stock_quantity" value={newProduct.stock_quantity}
+                           onChange={handleInputChange} className="w-full border border-gray-300 rounded px-3 py-2"
+                           placeholder='Quantity'/>
+                  </div>
+                  <div className="mb-4">
+                    <label className="block mb-1 font-semibold">Type:</label>
+                    <input type="text" name="type" value={newProduct.type} onChange={handleInputChange}
+                           className="w-full border border-gray-300 rounded px-3 py-2" placeholder='Type'/>
+                  </div>
+                  <div className="mb-4 ">
+                    <label className="block mb-1 font-semibold">Description:</label>
+                    <input name="description" value={newProduct.description} onChange={handleInputChange}
+                           className="w-full border border-gray-300 rounded px-3 py-2" placeholder='Description'/>
+                  </div>
+                  <div className="mb-4 col-span-2">
+                    <label className="block mb-1 font-semibold">Image:</label>
+                    {imagePreview && (
+                        <div className="mb-2">
+                          <img src={imagePreview} alt="Product" className="w-32 h-32 object-cover"/>
+                        </div>
+                    )}
+                    <input type="file" accept="image/*" onChange={handleImageChange}
+                           className="w-full border border-gray-300 rounded px-3 py-2"/>
+                  </div>
+
+                </div>
+                <div className="flex justify-end mt-4">
+                  <button type="button" onClick={handleCloseModal}
+                          className="mr-2 bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded">Cancel
+                  </button>
+                  <button type="submit"
+                          className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded">{editingProduct ? 'Update' : 'Add'}</button>
+                </div>
+              </form>
+            </div>
           </div>
         </div>
       )}
