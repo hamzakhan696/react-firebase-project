@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { getDocs, collection, addDoc, deleteDoc, doc, updateDoc } from 'firebase/firestore';
-import { db } from '../../firebase/firebase'; 
+import { db } from '../../firebase/firebase';
 import '../../App.css'; // Importing the app.css file
 import toastr from "toastr";
 import "toastr/build/toastr.min.css"; // Import toastr CSS
@@ -11,6 +11,7 @@ const ProductComponent = () => {
   const [products, setProducts] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredProducts, setFilteredProducts] = useState([]);
+  const [allProducts, setAllProducts] = useState([]);
   const [newProduct, setNewProduct] = useState({
     name: '',
     price: '',
@@ -21,7 +22,7 @@ const ProductComponent = () => {
     image: '' // Add this line
   });
   const [imagePreview, setImagePreview] = useState(''); // State to track image preview
-  
+
   const [showModal, setShowModal] = useState(false); // State to control modal visibility
   const [editingProduct, setEditingProduct] = useState(null);
   const [isLoading, setIsLoading] = useState(true); // State to track data loading
@@ -35,6 +36,7 @@ const ProductComponent = () => {
     const productsData = snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }));
     setProducts(productsData);
     setFilteredProducts(productsData);
+    setAllProducts(productsData);
     setIsLoading(false); // Set loading to false when fetching completes
   };
 
@@ -149,34 +151,79 @@ const ProductComponent = () => {
     reader.readAsDataURL(file);
   };
 
+  const [isFilterDropdownOpen, setIsFilterOpen] = useState(false);
+  const toggleFilterDropdown = () => {
+    setIsFilterOpen(!isFilterDropdownOpen);
+  };
+  const searchByParam = (filterParam) => {
+    let filtered = [];
+    if (filterParam === 'type') {
+      filtered = allProducts.filter(product => product.type.toLowerCase().includes(searchTerm.toLowerCase()));
+    } else if (filterParam === 'manufacturer') {
+      filtered = allProducts.filter(product => product.manufacturer.toLowerCase().includes(searchTerm.toLowerCase()));
+    } else if (filterParam === 'reset') {
+      filtered = allProducts;
+      setSearchTerm('');
+    }
+    setFilteredProducts(filtered);
+    setIsFilterOpen(false);
+  }
+
   return (
     <div className="product-container pb-12 relative">
-      <div className="login-image absolute inset-0 flex justify-center items-center opacity-10 pointer-events-none z-0">
+      <div className="login-image fixed inset-0 flex justify-center items-center opacity-10 pointer-events-none z-0">
         <img src="/logo.jpg" alt="logo" className="img-fluid h-full w-full" style={{ width: '60%', height: '60%', objectFit: 'contain' }} />
       </div>
-      <h2 className='mt-16 title text-center'>Products Page</h2>
-      <div className="flex">
-        <div className='mt-20'>
+      <h2 className='mt-16 title text-center'>Products Listing</h2>
+      <div className="flex justify-between z-10 mt-20">
+        <div className=''>
           <button onClick={toggleModal} type="button" className="text-nowrap text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2">
             Add New Product
           </button>
         </div>
-    
-        <div className="w-4/6	max-w-sm mx-auto mt-20">
-          <form className="relative" onSubmit={handleSubmit}>
-            <input 
-              type="text" 
-              className="w-full pl-10 lg:mx-56 pr-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-              placeholder="Search by type and manufacturer..." value={searchTerm} onChange={handleSearchChange}
+
+        <div className="flex items-center">
+          <div className="relative">
+            <input
+                type="text"
+                className="overflow-hidden whitespace-nowrap text-ellipsis pl-10 pr-4 py-2 border border-gray-300 rounded-l-lg shadow-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                placeholder="Search" value={searchTerm} onChange={(event) => setSearchTerm(event.target.value)}
             />
-            <svg className="absolute lg:mx-56 left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+            <svg className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
               <path fillRule="evenodd" d="M12.9 14.32a8 8 0 111.414-1.414l5.387 5.387a1 1 0 01-1.414 1.414l-5.387-5.387zM14 8a6 6 0 11-12 0 6 6 0 0112 0z" clipRule="evenodd" />
             </svg>
-          </form>
+          </div>
+
+          <div className="relative inline-block text-left shrink-0 z-20">
+            <button onClick={toggleFilterDropdown} className="border border-blue-500 bg-blue-500 text-white font-semibold py-2 px-4 rounded-r-md focus:outline-none focus:ring focus:ring-blue-200 flex items-center gap-2">
+              Filter
+              <svg className={`fill-current h-4 w-4 transform ${isFilterDropdownOpen ? 'rotate-180' : ''}`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                <path d="M10 12l-5-5 1.41-1.41L10 9.17l3.59-3.58L15 7z"/>
+              </svg>
+            </button>
+            {isFilterDropdownOpen && (
+                <div className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+                  <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
+                    <div onClick={() => searchByParam('type')} className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-200 cursor-pointer" role="menuitem">
+                      By Type
+                    </div>
+                    <div onClick={() => searchByParam('manufacturer')} className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-200 cursor-pointer" role="menuitem">
+                      By Manufacturer
+                    </div>
+                    {searchTerm &&
+                        <div onClick={() => searchByParam('reset')}
+                             className="block px-4 py-2 text-sm text-gray-700 hover:bg-red-400 hover:text-white cursor-pointer"
+                             role="menuitem">
+                          Reset
+                        </div>
+                    }
+                  </div>
+                </div>
+            )}
+          </div>
         </div>
       </div>
-
-      {/* Spinner */}
+        {/* Spinner */}
       {isLoading && (
         <div className='spinner-overlay'>
           <Oval
@@ -190,57 +237,65 @@ const ProductComponent = () => {
           />
         </div>
       )}
-      <div className="cards-container mx-5">
-        {filteredProducts.map(product => (
-          <div key={product.id} className="relative max-w-xs rounded-xl px-8 py-5 text-gray-600 shadow-2xl mt-12">
-            <div className="flex justify-between items-center">
-              <div className="mb-4 w-15 rounded-md bg-blue-100 px-2 py-1 text-sm font-medium text-blue-700">Product</div>
-              <div className="relative">
-                <button onClick={() => toggleDropdown(product.id)} className="focus:outline-none">
-                  <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v.01M12 12v.01M12 18v.01"></path>
-                  </svg>
-                </button>
-                {dropdownVisible[product.id] && (
-                  <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-50">
-                    <ul>
-                      <li className="block px-4 py-2 text-gray-800 hover:bg-gray-100 cursor-pointer" onClick={() => handleEditProduct(product)}>Edit</li>
-                      <li className="block px-4 py-2 text-danger-800 hover:bg-gray-100 cursor-pointer" onClick={() => deleteProduct(product.id)}>Delete</li>
-                    </ul>
-                  </div>
-                )}
+      <div className="cards-container mx-5 mt-10">
+        {
+          filteredProducts.length ? filteredProducts.map(product => (
+            <div key={product.id} className="bg-white relative max-w-xs rounded-xl overflow-hidden text-gray-600 border border-gray-300 shadow-2xl z-10">
+              <div className="flex justify-between items-center">
+                <div className="absolute top-4 left-4 mb-4 w-20 rounded-md bg-blue-100 px-4 py-1 text-sm font-medium text-blue-700 z-10">Product</div>
+                <div className="absolute right-4 top-4">
+                  <button onClick={() => toggleDropdown(product.id)} className="focus:outline-none">
+                    <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v.01M12 12v.01M12 18v.01"></path>
+                    </svg>
+                  </button>
+                  {dropdownVisible[product.id] && (
+                    <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-50">
+                      <ul>
+                        <li className="block px-4 py-2 text-gray-800 hover:bg-gray-100 cursor-pointer" onClick={() => handleEditProduct(product)}>Edit</li>
+                        <li className="block px-4 py-2 text-danger-800 hover:bg-gray-100 cursor-pointer" onClick={() => deleteProduct(product.id)}>Delete</li>
+                      </ul>
+                    </div>
+                  )}
+                </div>
               </div>
+              <Link to={`/product/${product.id}`}>
+                <div className="mt-2">
+                  {product.image && (
+                    <div className="w-full h-[250px] overflow-hidden">
+                      <img src={product.image} alt={product.name} className="w-full h-full object-cover hover:scale-150 transition duration-300" />
+                    </div>
+                  )}
+                  <div className="px-8 py-5 mb-5">
+                  <h2 className="text-lg font-bold text-gray-800">{product.name}</h2>
+                  <p className="mt-2 text-sm text-gray-600">{product.description}</p>
+                  <div className="flex items-center mt-2">
+                    <span className="text-sm font-medium text-gray-800">Price:</span>
+                    <span className="ml-2 text-sm text-gray-600">${product.price}</span>
+                  </div>
+                  <div className="flex items-center mt-2">
+                    <span className="text-sm font-medium text-gray-800">Manufacturer:</span>
+                    <span className="ml-2 text-sm text-gray-600">{product.manufacturer}</span>
+                  </div>
+                  <div className="flex items-center mt-2">
+                    <span className="text-sm font-medium text-gray-800">Stock:</span>
+                    <span className="ml-2 text-sm text-gray-600">{product.stock_quantity}</span>
+                  </div>
+                  <div className="flex items-center mt-2">
+                    <span className="text-sm font-medium text-gray-800">Type:</span>
+                    <span className="ml-2 text-sm text-gray-600">{product.type}</span>
+                  </div>
+                  </div>
+                  <button className="mt-4 flex items-center space-x-2 rounded-md border-2 border-blue-500 px-4 py-2 font-medium text-blue-600 transition hover:bg-blue-500 hover:text-white"><span>More Detail</span><span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-6 w-6"><path fillRule="evenodd" d="M16.72 7.72a.75.75 0 011.06 0l3.75 3.75a.75.75 0 010 1.06l-3.75 3.75a.75.75 0 11-1.06-1.06l-2.47-2.47H3a.75.75 0 010-1.5h16.19l-2.47-2.47a.75.75 0 010-1.06z" clipRule="evenodd"></path></svg></span></button>
+                </div>
+              </Link>
             </div>
-            <Link to={`/product/${product.id}`}>
-              <div className="mt-2">
-                {product.image && (
-                  <div className="my-4">
-                    <img src={product.image} alt={product.name} className="w-100 h-100 object-cover" />
-                  </div>
-                )}
-                <h2 className="text-lg font-bold text-gray-800">{product.name}</h2>
-                <p className="mt-2 text-sm text-gray-600">{product.description}</p>
-                <div className="flex items-center mt-2">
-                  <span className="text-sm font-medium text-gray-800">Price:</span>
-                  <span className="ml-2 text-sm text-gray-600">${product.price}</span>
-                </div>
-                <div className="flex items-center mt-2">
-                  <span className="text-sm font-medium text-gray-800">Manufacturer:</span>
-                  <span className="ml-2 text-sm text-gray-600">{product.manufacturer}</span>
-                </div>
-                <div className="flex items-center mt-2">
-                  <span className="text-sm font-medium text-gray-800">Stock:</span>
-                  <span className="ml-2 text-sm text-gray-600">{product.stock_quantity}</span>
-                </div>
-                <div className="flex items-center mt-2">
-                  <span className="text-sm font-medium text-gray-800">Type:</span>
-                  <span className="ml-2 text-sm text-gray-600">{product.type}</span>
-                </div>
-                <button className="mt-4 flex items-center space-x-2 rounded-md border-2 border-blue-500 px-4 py-2 font-medium text-blue-600 transition hover:bg-blue-500 hover:text-white"><span>More Detail</span><span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-6 w-6"><path fillRule="evenodd" d="M16.72 7.72a.75.75 0 011.06 0l3.75 3.75a.75.75 0 010 1.06l-3.75 3.75a.75.75 0 11-1.06-1.06l-2.47-2.47H3a.75.75 0 010-1.5h16.19l-2.47-2.47a.75.75 0 010-1.06z" clipRule="evenodd"></path></svg></span></button>
+          ))
+              :
+              <div className="flex justify-center items-center w-full h-[45vh]">
+                <p className="text-lg font-semibold">No products found</p>
               </div>
-            </Link>
-          </div>
-        ))}
+        }
       </div>
 
       {showModal && (
@@ -282,7 +337,7 @@ const ProductComponent = () => {
                   )}
                   <input type="file" accept="image/*" onChange={handleImageChange} className="w-full border border-gray-300 rounded px-3 py-2" />
                 </div>
-              
+
               </div>
               <div className="flex justify-end mt-4">
                 <button type="button" onClick={handleCloseModal} className="mr-2 bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded">Cancel</button>
