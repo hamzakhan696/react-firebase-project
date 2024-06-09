@@ -49,11 +49,8 @@ const Register = () => {
       {userLoggedIn && (<Navigate to={'/home'} replace={true} />)}
 
       <main className="w-full h-screen flex flex-col justify-center items-center space-y-8">
-     
+
         <div className="w-96 text-gray-600 space-y-5 p-4 shadow-xl border rounded-xl relative  z-20">
-        <div className="login-image absolute inset-0 flex justify-center items-center opacity-10 pointer-events-none z-10">
-      <img src="/logo.jpg" alt="logo" className="img-fluid h-full w-full object-cover" />
-    </div>
           <div className="text-center mb-6">
             <div className="mt-2">
               <h3 className="text-gray-800 text-xl font-semibold sm:text-2xl">Create a New Account</h3>

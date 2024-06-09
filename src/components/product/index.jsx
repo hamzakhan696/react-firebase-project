@@ -152,10 +152,10 @@ const ProductComponent = () => {
   };
 
   const [isFilterDropdownOpen, setIsFilterOpen] = useState(false);
-  const toggleFilterDropdown = () => {
+  const toggleFilterDropdown = () => {  // open filter dropdown
     setIsFilterOpen(!isFilterDropdownOpen);
   };
-  const searchByParam = (filterParam) => {
+  const searchByParam = (filterParam) => {  // search by type or manufacturer and reset search field
     let filtered = [];
     if (filterParam === 'type') {
       filtered = allProducts.filter(product => product.type.toLowerCase().includes(searchTerm.toLowerCase()));
@@ -171,9 +171,6 @@ const ProductComponent = () => {
 
   return (
     <div className="product-container pb-12 relative">
-      <div className="login-image fixed inset-0 flex justify-center items-center opacity-10 pointer-events-none z-0">
-        <img src="/logo.jpg" alt="logo" className="img-fluid h-full w-full" style={{ width: '60%', height: '60%', objectFit: 'contain' }} />
-      </div>
       <h2 className='mt-16 title text-center'>Products Listing</h2>
       <div className="flex justify-between z-10 mt-20">
         <div className=''>

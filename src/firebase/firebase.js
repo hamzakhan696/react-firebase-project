@@ -30,6 +30,7 @@ console.log(Products)
 })
 .catch(err =>{
   console.log(err.message)
+  throw err;
 })
 
 export { app, auth, db };

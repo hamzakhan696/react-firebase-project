@@ -28,10 +28,6 @@ const ProductDetailComponent = () => {
 
   return (
     <div className="relative mx-5 mx-md-32 mt-5 mb-5">
-      {/* Logo image behind the cards */}
-      <div className="fixed inset-0 flex justify-center items-center opacity-10 pointer-events-none z-0">
-        <img src="/logo.jpg" alt="logo" className="img-fluid h-full w-full" style={{ width: '50%', height: '50%', objectFit: 'contain' }} />
-      </div>
 
       {/* Cards container */}
       <div className="bg-white relative max-w-xs rounded-xl overflow-hidden text-gray-600 border border-gray-300 shadow-2xl z-10 mt-14">

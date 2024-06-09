@@ -122,7 +122,7 @@ const HomeComponent = () => {
 
       cart.forEach(item => {
         const productRef = doc(db, 'Products', item.id);
-        batch.update(productRef, {
+        batch.update(productRef, {  // save products added in cart to firebase
           stock_quantity: item.stock_quantity - item.quantity
         });
       });
@@ -141,7 +141,7 @@ const HomeComponent = () => {
       setProducts(updatedProducts);
       setFilteredProducts(updatedProducts);
 
-      setCart([]);
+      setCart([]); // empty cart on successfully placing order
       localStorage.removeItem('cart');
       setIsSidebarOpen(false);
       toastr.success('Order placed successfully.', 'Success');
@@ -173,9 +173,7 @@ const HomeComponent = () => {
 
   return (
     <div className="product-container relative pb-12">
-    <div className="fixed inset-0 flex justify-center items-center opacity-10 pointer-events-none z-0">
-      <img src="/logo.jpg" alt="logo" className="img-fluid h-full w-full scale-110" style={{ width: '50%', height: '50%', objectFit: 'contain' }} />
-    </div>
+
     <h2 className="mt-16 title text-center text-xl z-10">Home Page</h2>
 
     <div className="flex justify-between z-10">

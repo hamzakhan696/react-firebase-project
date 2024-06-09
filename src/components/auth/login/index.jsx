@@ -41,7 +41,7 @@ const Login = () => {
     return snapshot.docs.map(doc => ({
       ...doc.data(),
       id: doc.id,
-      role: doc.data().role 
+      role: doc.data().role
     }));
   };
 
@@ -84,6 +84,7 @@ const Login = () => {
         const { email: userEmail, role } = await signIn(email, password);
         const currentUser = users.find(user => user.email === userEmail);
 
+        // check if logged in user is admin else user
         if (currentUser && currentUser.role === "admin") {
           navigate('/product');
           toastr.success('You have successfully logged in.', 'Login Successful');
@@ -102,10 +103,8 @@ const Login = () => {
   return (
     <div>
 <main className="w-full h-screen flex flex-col justify-center items-center relative">
-  <div className="w-96 text-gray-600 space-y-5 p-4 shadow-xl border rounded-xl bg-white relative z-20">
-    <div className="login-image absolute inset-0 flex justify-center items-center opacity-10 pointer-events-none z-10">
-      <img src="/logo.jpg" alt="logo" className="img-fluid h-full w-full object-cover" />
-    </div>
+  <div className="w-96 text-gray-600 space-y-5 p-4 shadow-xl border rounded-xl relative z-20">
+
     <div className="text-center mb-6 relative z-30">
       <div className="mt-2">
         <h3 className="text-gray-800 text-xl font-semibold sm:text-2xl">Sign In to Your Account</h3>
